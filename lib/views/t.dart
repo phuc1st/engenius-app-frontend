@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/models/sign_in.dart';
-import 'package:toeic/viewmodels/sign_in.dart';
+import 'package:toeic/models/sign_in_model.dart';
+import 'package:toeic/viewmodels/sign_in_view_model.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
