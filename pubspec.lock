@@ -50,7 +50,7 @@ packages:
     source: hosted
     version: "1.0.8"
   dio:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: dio
       sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
@@ -78,22 +78,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_appauth:
-    dependency: "direct dev"
-    description:
-      name: flutter_appauth
-      sha256: "5f9df0b9850d2dfa8ce45daab9f650cbffacf0714f21ead35f268b463ad15ef8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.2"
-  flutter_appauth_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_appauth_platform_interface
-      sha256: "1abe02e3078dbd481e3823959f24c90f619186b661a3fb908d3e2e94c646c227"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -103,7 +87,7 @@ packages:
     source: hosted
     version: "5.0.0"
   flutter_riverpod:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_riverpod
       sha256: "9532ee6db4a943a1ed8383072a2e3eeda041db5657cdf6d2acecf3c21ecbe7e1"
@@ -111,7 +95,7 @@ packages:
     source: hosted
     version: "2.6.1"
   flutter_secure_storage:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_secure_storage
       sha256: "22dbf16f23a4bcf9d35e51be1c84ad5bb6f627750565edd70dab70f3ff5fff8f"
@@ -265,7 +249,7 @@ packages:
     source: hosted
     version: "2.1.8"
   provider:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: provider
       sha256: "489024f942069c2920c844ee18bb3d467c69e48955a4f32d1677f71be103e310"

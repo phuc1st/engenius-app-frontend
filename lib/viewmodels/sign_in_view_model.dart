@@ -30,7 +30,7 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse>> {
 
     try {
       final response = await _dio.post(
-        'http://localhost:8222/api/v1/identity/auth/token',
+        'http://192.168.1.9:8222/api/v1/identity/auth/token',
         data: request.toJson(),
       );
       final apiResponse = ApiResponse<LoginResponse>.fromJson(

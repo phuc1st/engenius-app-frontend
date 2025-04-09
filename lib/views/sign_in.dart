@@ -31,7 +31,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Padding(
+          SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

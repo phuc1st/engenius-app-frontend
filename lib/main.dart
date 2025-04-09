@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:toeic/views/home.dart';
-import 'package:toeic/views/login.dart';
 import 'package:toeic/views/sign_in.dart';
 import 'package:toeic/views/sign_up.dart';
 import 'package:toeic/views/welcome.dart';
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SignUpScreen(),
+      home: SignInScreen(),
     );
   }
 }
