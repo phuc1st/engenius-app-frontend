@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:toeic/views/flash_card.dart';
 import 'package:toeic/views/home.dart';
 import 'package:toeic/views/sign_in.dart';
 import 'package:toeic/views/sign_up.dart';
+import 'package:toeic/views/topic_detail.dart';
+import 'package:toeic/views/vocabulary.dart';
 import 'package:toeic/views/welcome.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() {
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SignInScreen(),
+      home: FlashcardScreen(),
     );
   }
 }

@@ -16,12 +16,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool isObscure = true;
 
   void _handleLogin() {
-    final request = LoginRequest(
-      username: usernameController.text.trim(),
-      password: passwordController.text,
-    );
+    if (usernameController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      _showSnackbar(context, "Vui lòng nhập ầy đủ thông tin");
+    } else {
+      final request = LoginRequest(
+        username: usernameController.text.trim(),
+        password: passwordController.text,
+      );
 
-    ref.read(loginViewModelProvider.notifier).login(request);
+      ref.read(loginViewModelProvider.notifier).login(request);
+    }
   }
 
   @override
@@ -31,147 +36,152 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {},
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {},
+                    ),
                   ),
-                ),
-                Text(
-                  "Sign In",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 20),
-                Image.asset("images/cat.png", height: 80),
-                SizedBox(height: 10),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "TOEIC",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                  Text(
+                    "Sign In",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
+                  Image.asset("images/cat.png", height: 80),
+                  SizedBox(height: 10),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "TOEIC",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                      TextSpan(
-                        text: " Test Pro",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                        TextSpan(
+                          text: " Test Pro",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      hintText: "Tài khoản",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    hintText: "Tài khoản",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: passwordController,
-                  obscureText: isObscure,
-                  decoration: InputDecoration(
-                    hintText: "Mật khẩu",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        isObscure ? Icons.visibility_off : Icons.visibility,
+                  SizedBox(height: 15),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: isObscure,
+                    decoration: InputDecoration(
+                      hintText: "Mật khẩu",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          isObscure =
-                              !isObscure; // Thay đổi trạng thái hiển thị mật khẩu
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Quên mật khẩu",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 50,
-                    ),
-                  ),
-                  child: const Text(
-                    "Đăng Nhập",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text("- Hoặc -", style: TextStyle(color: Colors.black54)),
-                SizedBox(height: 10),
-                OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.all(10),
-                    side: BorderSide(color: Colors.black54),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset("images/cat.png", height: 20),
-                      SizedBox(width: 10),
-                      Text(
-                        "Sign in with Google",
-                        style: TextStyle(color: Colors.black),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isObscure ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isObscure =
+                                !isObscure; // Thay đổi trạng thái hiển thị mật khẩu
+                          });
+                        },
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Không có tài khoản?"),
-                    TextButton(
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
                       onPressed: () {},
                       child: Text(
-                        "Đăng ký ngay",
+                        "Quên mật khẩu",
                         style: TextStyle(color: Colors.blue),
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: _handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 50,
+                      ),
+                    ),
+                    child: const Text(
+                      "Đăng Nhập",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text("- Hoặc -", style: TextStyle(color: Colors.black54)),
+                  SizedBox(height: 10),
+                  OutlinedButton(
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.all(10),
+                      side: BorderSide(color: Colors.black54),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset("images/cat.png", height: 20),
+                        SizedBox(width: 10),
+                        Text(
+                          "Sign in with Google",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Không có tài khoản?"),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Đăng ký ngay",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           if (loginState.isLoading) _buildFullScreenLoading(),
@@ -243,8 +253,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           ),
     );
   }
-  void _showSnackbar(BuildContext context, String message,
-      {bool isError = false}) {
+
+  void _showSnackbar(
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     final snackBar = SnackBar(
       content: Text(
         message,
