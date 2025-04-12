@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/models/sign_in_model.dart';
-import 'package:toeic/viewmodels/sign_in_view_model.dart';
+import 'package:toeic/models/login.dart';
+import 'package:toeic/ui/auth/login/view_models/login_view_model.dart';
 
-class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+class LoginInScreen extends ConsumerStatefulWidget {
+  const LoginInScreen({super.key});
 
   @override
-  ConsumerState<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<LoginInScreen> createState() => _LogInScreenState();
 }
 
-class _SignInScreenState extends ConsumerState<SignInScreen> {
+class _LogInScreenState extends ConsumerState<LoginInScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   bool isObscure = true;
