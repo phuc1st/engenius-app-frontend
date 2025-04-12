@@ -1,33 +1,42 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/data/repositories/auth/auth_repository.dart';
-import 'package:toeic/models/login.dart';
-import 'package:toeic/utils/result.dart';
+import 'package:dio/dio.dart';
+import 'package:toeic/data/services/api/model/api_response.dart';
+import 'package:toeic/models/sign_up_model.dart';
 
-class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse>> {
-  final LoginRepository _loginRepository;
+final signupViewModelProvider = StateNotifierProvider<SignupViewModel, AsyncValue<SignupResponse?>>(
+      (ref) => SignupViewModel(),
+);
 
-  LoginViewModel({required LoginRepository loginRepository})
-      : _loginRepository = loginRepository,
-        super(AsyncValue.data(
-        LoginResponse(token: '', expiryTime: DateTime.fromMillisecondsSinceEpoch(0)),
-      ));
+class SignupViewModel extends StateNotifier<AsyncValue<SignupResponse?>> {
+  SignupViewModel() : super(const AsyncValue.data(null));
 
-  Future<void> login(LoginRequest request) async {
+  final Dio _dio = Dio(BaseOptions(
+    validateStatus: (status) {
+      return status != null && status < 500; // Chỉ quăng lỗi với mã >= 500
+    },
+  ));
+
+  Future<void> signup(SignupRequest request) async {
     state = const AsyncValue.loading();
-    final result = await _loginRepository.login(request);
-
-    if (result is Ok<LoginResponse>) {
-      state = AsyncValue.data(result.value);
-    } else if (result is Error<LoginResponse>) {
-      state = AsyncValue.error(
-        result.error.toString(),
-        StackTrace.current,
+    try {
+      final response = await _dio.post(
+        'http://localhost:8222/api/v1/identity/users/registration',
+        data: request.toJson(),
       );
+      final apiResponse = ApiResponse<SignupResponse>.fromJson(
+        response.data as Map<String, dynamic>,
+            (json) => SignupResponse.fromJson(json as Map<String, dynamic>),
+      );
+      if (response.statusCode == 200) {
+        state = AsyncValue.data(apiResponse.result!); // Trạng thái thành công
+      } else {
+        state = AsyncValue.error(
+          apiResponse.message.toString(),
+          StackTrace.current,
+        );
+      }
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
     }
   }
 }
-final loginViewModelProvider = StateNotifierProvider<LoginViewModel, AsyncValue<LoginResponse>>((ref) {
-  final loginRepository = ref.read(loginRepositoryProvider);
-  return LoginViewModel(loginRepository: loginRepository);
-});
-
