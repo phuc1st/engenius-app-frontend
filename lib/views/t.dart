@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/models/login.dart';
+import 'package:toeic/data/services/api/model/login_request/login_request.dart';
 import 'package:toeic/ui/auth/login/view_models/login_view_model.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {

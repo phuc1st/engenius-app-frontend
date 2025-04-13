@@ -1,22 +1,3 @@
-import 'package:flutter/material.dart';
-
-@immutable
-class LoginRequest {
-  final String username;
-  final String password;
-
-  const LoginRequest({
-    required this.username,
-    required this.password,
-  });
-
-  Map<String, dynamic> toJson() => {
-    'username': username,
-    'password': password,
-  };
-}
-
-@immutable
 class LoginResponse {
   final String token;
   final DateTime expiryTime;
@@ -36,7 +17,7 @@ class LoginResponse {
             token: token,
             expiryTime: DateTime.parse(expiryTime).toLocal(),
           ),
-      _ => throw const FormatException("Invalid login response format")
+      _ => throw const FormatException("Invalid login_response.dart response format")
     };
   }
 }

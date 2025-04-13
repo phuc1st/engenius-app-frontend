@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/models/sign_up_model.dart';
+import 'package:toeic/data/services/api/model/signup_request/signup_request.dart';
 import 'package:toeic/ui/auth/sign_up/view_models/sign_up_view_model.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -44,7 +44,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           const SnackBar(content: Text("Đăng ký thành công!")),
         );
         print(next.value!.roles);
-        // Navigator.pop(context); // Quay lại trang login chẳng hạn
+        // Navigator.pop(context); // Quay lại trang login_response.dart chẳng hạn
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Lỗi: ${next.error}")),

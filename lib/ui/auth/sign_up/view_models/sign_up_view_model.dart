@@ -1,42 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart';
-import 'package:toeic/data/services/api/model/api_response.dart';
-import 'package:toeic/models/sign_up_model.dart';
+import 'package:toeic/data/repositories/auth/auth_repository.dart';
+import 'package:toeic/data/services/api/model/signup_request/signup_request.dart';
+import 'package:toeic/data/services/api/model/signup_response/signup_response.dart';
+import 'package:toeic/utils/result.dart';
 
-final signupViewModelProvider = StateNotifierProvider<SignupViewModel, AsyncValue<SignupResponse?>>(
-      (ref) => SignupViewModel(),
-);
+final signupViewModelProvider =
+    StateNotifierProvider<SignupViewModel, AsyncValue<SignupResponse?>>((ref) {
+      final authRepository = ref.read(authRepositoryProvider);
+      return SignupViewModel(authRepository: authRepository);
+    });
 
 class SignupViewModel extends StateNotifier<AsyncValue<SignupResponse?>> {
-  SignupViewModel() : super(const AsyncValue.data(null));
+  final AuthRepository _authRepository;
 
-  final Dio _dio = Dio(BaseOptions(
-    validateStatus: (status) {
-      return status != null && status < 500; // Chỉ quăng lỗi với mã >= 500
-    },
-  ));
+  SignupViewModel({required AuthRepository authRepository})
+    : _authRepository = authRepository,
+      super(const AsyncValue.data(null));
 
   Future<void> signup(SignupRequest request) async {
     state = const AsyncValue.loading();
-    try {
-      final response = await _dio.post(
-        'http://localhost:8222/api/v1/identity/users/registration',
-        data: request.toJson(),
-      );
-      final apiResponse = ApiResponse<SignupResponse>.fromJson(
-        response.data as Map<String, dynamic>,
-            (json) => SignupResponse.fromJson(json as Map<String, dynamic>),
-      );
-      if (response.statusCode == 200) {
-        state = AsyncValue.data(apiResponse.result!); // Trạng thái thành công
-      } else {
-        state = AsyncValue.error(
-          apiResponse.message.toString(),
-          StackTrace.current,
-        );
-      }
-    } catch (e, stack) {
-      state = AsyncValue.error(e, stack);
+
+    final result = await _authRepository.signup(request);
+
+    if (result is Ok<SignupResponse>) {
+      state = AsyncValue.data(result.value);
+    } else if (result is Error<SignupResponse>) {
+      state = AsyncValue.error(result.error.toString(), StackTrace.current);
     }
   }
 }
