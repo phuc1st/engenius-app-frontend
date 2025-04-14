@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:toeic/ui/learn_vocabulary/widgets/flash_card.dart';
+import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.dart';
 import 'package:toeic/ui/home/widgets/home.dart';
 import 'package:toeic/ui/auth/login/widgets/login_screen.dart';
 import 'package:toeic/ui/auth/sign_up/widgets/sign_up_screen.dart';
-import 'package:toeic/ui/learn_vocabulary/widgets/topic_detail.dart';
-import 'package:toeic/ui/learn_vocabulary/widgets/vocabulary.dart';
+import 'package:toeic/ui/learn_vocabulary/topic_detail/widgets/topic_detail_screen.dart';
+import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_screen.dart';
 import 'package:toeic/ui/home/widgets/welcome.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() {
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: LoginInScreen(),
+      home: VocabularyScreen(),
     );
   }
 }
