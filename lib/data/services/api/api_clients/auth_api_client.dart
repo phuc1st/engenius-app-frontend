@@ -1,7 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/data/services/api/api_clients/base_api_client.dart';
 import 'package:toeic/data/services/api/model/api_response.dart';
 import 'package:toeic/data/services/api/model/login_request/login_request.dart';
@@ -14,7 +13,7 @@ class AuthApiClient extends BaseApiClient {
 
   Future<ApiResponse<LoginResponse>> login(LoginRequest loginRequest) async {
     return makeRequest(
-      url: 'http://localhost:8222/api/v1/identity/auth/token',
+      url: ApiConstants.authToken,
       method: 'POST',
       body: loginRequest.toJson(),
       fromJson: (json) => (LoginResponse.fromJson(json)),
@@ -23,7 +22,7 @@ class AuthApiClient extends BaseApiClient {
 
   Future<ApiResponse<SignupResponse>> signup(SignupRequest request) async {
     return makeRequest(
-        url: 'http://localhost:8222/api/v1/identity/users/registration',
+        url: ApiConstants.registration,
         method: 'POST',
         body: request.toJson(),
         fromJson: (json) => SignupResponse.fromJson(json));

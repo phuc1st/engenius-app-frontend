@@ -11,9 +11,9 @@ abstract class PrivateBaseApiClient extends BaseApiClient {
   }) : super(dio: dio, defaultHeaders: defaultHeaders) {
     dio?.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final access_token = await TokenManager().getAccessToken();
-        if (access_token != null && access_token.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $access_token';
+        final accessToken = await TokenManager().getAccessToken();
+        if (accessToken != null && accessToken.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $accessToken';
         }
         handler.next(options);
       },
@@ -24,7 +24,7 @@ abstract class PrivateBaseApiClient extends BaseApiClient {
             if (newToken != null) {
               // Retry lại request ban đầu với token mới
               error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-              final retryResponse = await dio!.fetch(error.requestOptions);
+              final retryResponse = await dio.fetch(error.requestOptions);
               return handler.resolve(retryResponse);
             }
           } catch (e) {
