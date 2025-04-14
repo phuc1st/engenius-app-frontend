@@ -27,8 +27,4 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse>> {
     }
   }
 }
-final loginViewModelProvider = StateNotifierProvider<LoginViewModel, AsyncValue<LoginResponse>>((ref) {
-  final loginRepository = ref.read(authRepositoryProvider);
-  return LoginViewModel(loginRepository: loginRepository);
-});
 

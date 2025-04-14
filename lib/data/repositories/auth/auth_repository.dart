@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/services/api/api_clients/auth_api_client.dart';
 import 'package:toeic/data/services/api/model/login_request/login_request.dart';
 import 'package:toeic/data/services/api/model/login_response/login_response.dart';
@@ -7,7 +6,6 @@ import 'package:toeic/data/services/api/model/signup_response/signup_response.da
 import 'package:toeic/data/services/local/token_service.dart';
 import 'package:toeic/utils/app_exception.dart';
 import 'package:toeic/utils/result.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthRepository {
   final AuthApiClient _authApiClient;
@@ -41,13 +39,3 @@ class AuthRepository {
     }
   }
 }
-
-
-final authApiClientProvider = Provider<AuthApiClient>((ref) {
-  return AuthApiClient();
-});
-
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final apiClient = ref.read(authApiClientProvider);
-  return AuthRepository(authApiClient: apiClient);
-});

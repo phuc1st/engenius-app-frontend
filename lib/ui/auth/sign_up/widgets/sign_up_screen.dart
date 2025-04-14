@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/services/api/model/signup_request/signup_request.dart';
-import 'package:toeic/ui/auth/sign_up/view_models/sign_up_view_model.dart';
-
+import 'package:toeic/provider/auth_providers.dart';
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
