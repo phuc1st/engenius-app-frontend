@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/provider/learn_vocabulary_provider.dart';
+import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_header.dart';
 import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_topic_item.dart';
 
@@ -58,9 +59,12 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
                       final topic = topics[index];
                       return VocabularyTopicItem(
                         topic: topic,
-                        onTap: () {
-                          // TODO: navigate to topic detail screen
-                        },
+                        onTap:
+                            () => Navigator.pushNamed(
+                              context,
+                              Routes.topicDetail,
+                              arguments: topic,
+                            ),
                       );
                     },
                   ),

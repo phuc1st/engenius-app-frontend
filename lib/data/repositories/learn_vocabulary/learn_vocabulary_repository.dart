@@ -16,8 +16,8 @@ class LearnVocabularyRepository extends BaseRepository{
     return handleApiResponse(apiResponse);
   }
 
-  Future<Result<List<FlashCardResponse>>> getFlashCards() async {
-    final apiResponse = await _learnVocabularyApiClient.getFlashCards();
+  Future<Result<List<FlashCardResponse>>> getFlashCards(String topicId) async {
+    final apiResponse = await _learnVocabularyApiClient.getFlashCards(topicId);
     return handleApiResponse(apiResponse);
   }
 

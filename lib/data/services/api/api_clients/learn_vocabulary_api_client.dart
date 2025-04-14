@@ -17,9 +17,9 @@ class LearnVocabularyApiClient extends BaseApiClient {
     );
   }
 
-  Future<ApiResponse<List<FlashCardResponse>>> getFlashCards() async {
+  Future<ApiResponse<List<FlashCardResponse>>> getFlashCards(topicId) async {
     return makeRequest(
-      url: ApiConstants.getFlashCards,
+      url: '${ApiConstants.getFlashCards}/$topicId',
       method: 'GET',
       fromJson: (json) => listFromJson(json, FlashCardResponse.fromJson),
     );

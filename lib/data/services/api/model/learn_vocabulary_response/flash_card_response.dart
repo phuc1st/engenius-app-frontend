@@ -5,6 +5,7 @@ class FlashCardResponse {
   final String phonetic;
   final String audio;
   final String answer;
+  bool memorized;
 
   FlashCardResponse({
     required this.id,
@@ -13,6 +14,7 @@ class FlashCardResponse {
     required this.phonetic,
     required this.audio,
     required this.answer,
+    required this.memorized,
   });
 
   factory FlashCardResponse.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class FlashCardResponse {
         'phonetic': String phonetic,
         'audio': String audio,
         'answer': String answer,
+        'memorized': bool memorized,
       } =>
         FlashCardResponse(
           id: id,
@@ -32,6 +35,7 @@ class FlashCardResponse {
           phonetic: phonetic,
           audio: audio,
           answer: answer,
+          memorized: memorized,
         ),
       _ =>
         throw const FormatException(
@@ -40,4 +44,3 @@ class FlashCardResponse {
     };
   }
 }
-

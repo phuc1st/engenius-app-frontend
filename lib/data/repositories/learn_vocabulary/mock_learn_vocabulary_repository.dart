@@ -41,9 +41,42 @@ class MockLearnVocabularyRepository implements LearnVocabularyRepository {
   }
 
   @override
-  Future<Result<List<FlashCardResponse>>> getFlashCards() {
-    // TODO: implement getFlashCards
-    throw UnimplementedError();
+  Future<Result<List<FlashCardResponse>>> getFlashCards(String topicId) async {
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    ); // mô phỏng độ trễ API
+
+    // Giả lập một số flashcard
+    final mockFlashCards = [
+      FlashCardResponse(
+        id: '1',
+        image: 'images/cat.png',
+        word: 'Apple',
+        phonetic: '/ˈæp.əl/',
+        audio:
+            'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
+        answer: 'A fruit that is usually red, green, or yellow.', memorized: false,
+      ),
+      FlashCardResponse(
+        id: '2',
+        image: 'images/cat.png',
+        word: 'Dog',
+        phonetic: '/dɒɡ/',
+        audio:
+            'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
+        answer: 'A domesticated animal that barks.',memorized: false
+      ),
+      FlashCardResponse(
+        id: '3',
+        image: 'images/cat.png',
+        word: 'Book',
+        phonetic: '/bʊk/',
+        audio:
+            'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
+        answer: 'A set of pages with writing or pictures.',memorized: false
+      ),
+    ];
+    return Result.ok(mockFlashCards);
   }
 
   @override

@@ -1,86 +1,36 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/flash_card_response.dart';
+import 'package:toeic/provider/learn_vocabulary_provider.dart';
 
-class FlashcardScreen extends ConsumerStatefulWidget {
-  const FlashcardScreen({super.key});
+class FlashCardScreen extends ConsumerStatefulWidget {
+  final String topicId;
+  const FlashCardScreen({Key? key, required this.topicId}) : super(key: key);
 
   @override
-  ConsumerState<FlashcardScreen> createState() => _FlashcardScreenState();
+  ConsumerState<FlashCardScreen> createState() => _FlashCardScreenState();
 }
 
-class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
+class _FlashCardScreenState extends ConsumerState<FlashCardScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  // Dữ liệu flashcard gốc (nếu cần reset)
-  final List<Map<String, String>> originalFlashcards = [
-    {
-      'image': 'images/cat.png',
-      'word': 'characteristic',
-      'phonetic': '/ˌkærəktəˈrɪstɪk/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/jump.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    {
-      'image': 'images/cat.png',
-      'word': 'warranty',
-      'phonetic': '/ˈwɒrənti/',
-      'audio':
-          'https://commondatastorage.googleapis.com/codeskulptor-assets/Epoq-Lepidoptera.ogg',
-    },
-    // Thêm flashcard khác tại đây
-  ];
+  // Danh sách flashcard hiện tại và bản gốc để phục vụ reset
+  List<FlashCardResponse> flashcards = [];
+  List<FlashCardResponse> originalFlashcards = [];
 
-  late List<Map<String, String>> flashcards;
   int understoodCount = 0;
   int notUnderstoodCount = 0;
 
   @override
   void initState() {
     super.initState();
-    flashcards = List.from(originalFlashcards);
+    // Khi init, gọi viewModel để lấy flashcard theo topicId
+    Future.microtask(() {
+      ref
+          .read(flashCardViewModelProvider.notifier)
+          .getFlashCards(widget.topicId);
+    });
   }
 
   @override
@@ -89,46 +39,10 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
     super.dispose();
   }
 
-  Widget buildFlashcard(Map<String, String> card) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      margin: const EdgeInsets.symmetric(horizontal: 0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(card['image']!, height: 200),
-            const SizedBox(height: 16),
-            Text(
-              card['word']!,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              card['phonetic']!,
-              style: const TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () => _audioPlayer.play(UrlSource(card['audio']!)),
-                  icon: const Icon(Icons.volume_up, color: Colors.blue),
-                ),
-                const Icon(Icons.volume_up, color: Colors.green),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Lắng nghe trạng thái từ viewModel (Riverpod)
+    final flashCardsState = ref.watch(flashCardViewModelProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -136,135 +50,323 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: const Icon(Icons.close, color: Colors.black),
-        actions: [
-          const Icon(Icons.emoji_events, color: Colors.orangeAccent),
-          const SizedBox(width: 8),
-          const Icon(Icons.flag, color: Colors.redAccent),
-          const SizedBox(width: 8),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: LinearProgressIndicator(
-              value:
-                  flashcards.isNotEmpty
-                      ? (1 - flashcards.length / originalFlashcards.length)
-                      : 1.0,
-              backgroundColor: Colors.grey.shade300,
-              color: Colors.blue,
-              minHeight: 6,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child:
-                flashcards.isEmpty
-                    ? const Center(
-                      child: Text("Bạn đã hoàn thành tất cả flashcard!"),
-                    )
-                    : Center(
-                      child: Stack(
-                        children:
-                            flashcards.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              var card = entry.value;
-
-                              return Dismissible(
-                                key: ValueKey(index),
-                                direction: DismissDirection.horizontal,
-                                onDismissed: (direction) {
-                                  final understood =
-                                      direction == DismissDirection.startToEnd;
-
-                                  setState(() {
-                                    flashcards.removeAt(index);
-                                    if (understood) {
-                                      understoodCount++;
-                                    } else {
-                                      notUnderstoodCount++;
-                                      // Thêm lại học sau khi dismiss xong
-                                      Future.microtask(() {
-                                        setState(() {
-                                          flashcards.add(
-                                            Map<String, String>.from(card),
-                                          );
-                                        });
-                                      });
-                                    }
-                                  });
-                                },
-                                background: Container(
-                                  color: Colors.greenAccent,
-                                  alignment: Alignment.centerLeft,
-                                  padding: const EdgeInsets.only(left: 32),
-                                  child: const Text("Đã hiểu"),
-                                ),
-                                secondaryBackground: Container(
-                                  color: Colors.redAccent,
-                                  alignment: Alignment.centerRight,
-                                  padding: const EdgeInsets.only(right: 32),
-                                  child: const Text("Học lại"),
-                                ),
-                                child: buildFlashcard(card),
-                              );
-                            }).toList(),
+      body: flashCardsState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(child: Text("Lỗi: $error")),
+        data: (data) {
+          // Gán dữ liệu ban đầu nếu chưa có
+          if (originalFlashcards.isEmpty && data.isNotEmpty) {
+            originalFlashcards = List.from(data);
+            flashcards = List.from(data);
+          }
+          return Column(
+            children: [
+              // Thanh tiến độ: hiển thị số flashcard đã học (ví dụ "3/10")
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${originalFlashcards.length - flashcards.length} / ${originalFlashcards.length}",
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              // Phần chính hiển thị flashcard với DragTarget ở bên trái và bên phải
+              Expanded(
+                child: Stack(
+                  children: [
+                    // DragTarget bên trái (cho "Học lại")
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: DragTarget<FlashCardResponse>(
+                        builder: (context, candidateData, rejectedData) {
+                          return Container(
+                            // Hiển thị vùng đón có màu nền mờ nếu có đối tượng kéo vào
+                            color: candidateData.isNotEmpty
+                                ? Colors.red.withAlpha(100)
+                                : Colors.transparent,
+                          );
+                        },
+                        onAcceptWithDetails:
+                            (DragTargetDetails<FlashCardResponse> details) {
+                          final flashCard = details.data;
+                          setState(() {
+                            // Nếu thẻ được kéo chính là thẻ đầu tiên, di chuyển nó về cuối danh sách
+                            if (flashcards.isNotEmpty &&
+                                flashcards.first.id == flashCard.id) {
+                              final removed = flashcards.removeAt(0);
+                              flashcards.add(removed);
+                              notUnderstoodCount++;
+                            }
+                          });
+                        },
                       ),
                     ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.red,
-                radius: 22,
-                child: Text(
-                  "$notUnderstoodCount",
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                    // DragTarget bên phải (cho "Đã hiểu")
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: DragTarget<FlashCardResponse>(
+                        builder: (context, candidateData, rejectedData) {
+                          return Container(
+                            color: candidateData.isNotEmpty
+                                ? Colors.green.withAlpha(100)
+                                : Colors.transparent,
+                          );
+                        },
+                        onAcceptWithDetails:
+                            (DragTargetDetails<FlashCardResponse> details) async {
+                          final flashCard = details.data;
+                          setState(() {
+                            if (flashcards.isNotEmpty &&
+                                flashcards.first.id == flashCard.id) {
+                              flashcards.removeAt(0);
+                              understoodCount++;
+                            }
+                          });
+                          // Cập nhật trạng thái flashcard sang memorized = true trong viewModel
+                          // await ref
+                          //     .read(flashCardViewModelProvider.notifier)
+                          //     .updateFlashCardStatus(flashCard.id, true);
+                          // Nếu danh sách rỗng, lưu kết quả học
+                          if (flashcards.isEmpty) {
+                            // await ref
+                            //     .read(flashCardViewModelProvider.notifier)
+                            //     .saveFlashCardResults(originalFlashcards);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Đã lưu kết quả học")),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    // Hiển thị flashcard dạng draggable ở giữa
+                    Center(
+                      child: flashcards.isEmpty
+                          ? const Text("Bạn đã hoàn thành tất cả flashcard!")
+                          : DraggableFlashCard(
+                        flashCard: flashcards.first,
+                        audioPlayer: _audioPlayer,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              CircleAvatar(
-                backgroundColor: Colors.green,
-                radius: 22,
-                child: Text(
-                  "$understoodCount",
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
+              // Nút reset để khôi phục lại danh sách flashcard nếu cần.
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () {
+                        setState(() {
+                          flashcards = List.from(originalFlashcards);
+                          understoodCount = 0;
+                          notUnderstoodCount = 0;
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: () {
-                  setState(() {
-                    flashcards = List.from(originalFlashcards);
-                    understoodCount = 0;
-                    notUnderstoodCount = 0;
-                  });
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade400,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text("Tùy chọn"),
-              ),
-              IconButton(icon: const Icon(Icons.play_arrow), onPressed: () {}),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
+
+///
+/// DraggableFlashCard: Widget hiển thị flashcard với nội dung gồm hình ảnh, từ, phiên âm, và nút phát âm.
+/// Khi người dùng kéo, ở đỉnh flashcard sẽ hiển thị overlay:
+/// - Nếu kéo sang phải: hiển thị "Đã hiểu"
+/// - Nếu kéo sang trái: hiển thị "Học lại"
+///
+class DraggableFlashCard extends StatefulWidget {
+  final FlashCardResponse flashCard;
+  final AudioPlayer audioPlayer;
+  const DraggableFlashCard({
+    Key? key,
+    required this.flashCard,
+    required this.audioPlayer,
+  }) : super(key: key);
+
+  @override
+  _DraggableFlashCardState createState() => _DraggableFlashCardState();
+}
+
+class _DraggableFlashCardState extends State<DraggableFlashCard> {
+  double dragOffsetX = 0.0;
+  OverlayEntry? overlayEntry;
+
+  // Tạo overlay widget dựa theo hướng kéo
+  OverlayEntry _createOverlayEntry() {
+    String overlayText = "";
+    if (dragOffsetX > 0) {
+      overlayText = "Đã hiểu";
+    } else if (dragOffsetX < 0) {
+      overlayText = "Học lại";
+    }
+    // Vị trí có thể hiệu chỉnh sao cho nằm ngay trên đỉnh của flashcard
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        // Vị trí top tùy chỉnh theo thiết kế, ví dụ 50 điểm từ trên
+        top: 50,
+        // Căn giữa theo chiều ngang
+        left: MediaQuery.of(context).size.width / 2 - 100,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 200,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                overlayText,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showOverlay() {
+    if (overlayEntry == null) {
+      overlayEntry = _createOverlayEntry();
+      Overlay.of(context)?.insert(overlayEntry!);
+    }
+  }
+
+  void _updateOverlay() {
+    if (overlayEntry != null) {
+      // Khi update, ta loại bỏ overlay cũ và thêm overlay mới
+      overlayEntry!.remove();
+      overlayEntry = _createOverlayEntry();
+      Overlay.of(context)?.insert(overlayEntry!);
+    }
+  }
+
+  void _removeOverlay() {
+    overlayEntry?.remove();
+    overlayEntry = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Sử dụng Listener để bắt các sự kiện di chuyển của con trỏ
+    return Listener(
+      onPointerDown: (_) {
+        _showOverlay();
+      },
+      onPointerMove: (event) {
+        setState(() {
+          dragOffsetX += event.delta.dx;
+        });
+        _updateOverlay();
+      },
+      onPointerUp: (_) {
+        _removeOverlay();
+        setState(() {
+          dragOffsetX = 0.0;
+        });
+      },
+      child: Draggable<FlashCardResponse>(
+        data: widget.flashCard,
+        // Ở đây feedback chỉ hiển thị Card gốc, vì overlay đã được xử lý ngoài
+        feedback: Material(
+          color: Colors.transparent,
+          child: _buildCard(),
+        ),
+        childWhenDragging: Container(),
+        child: _buildCard(),
+      ),
+    );
+  }
+
+  Widget _buildCard() {
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Hình ảnh flashcard – đảm bảo asset đã khai báo
+            SizedBox(
+              height: 200,
+              child: Image.asset(widget.flashCard.image,
+                  fit: BoxFit.contain),
+            ),
+            const SizedBox(height: 16),
+            // Từ flashcard
+            Text(
+              widget.flashCard.word,
+              style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            // Phiên âm
+            Text(
+              widget.flashCard.phonetic,
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            // Nút phát âm (ví dụ dùng một URL audio)
+            ElevatedButton.icon(
+              onPressed: () => widget.audioPlayer
+                  .play(UrlSource(widget.flashCard.audio)),
+              icon: const Icon(Icons.volume_up),
+              label: const Text("Phát âm"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

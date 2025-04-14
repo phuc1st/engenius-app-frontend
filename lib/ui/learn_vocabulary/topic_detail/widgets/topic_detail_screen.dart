@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
+import 'package:toeic/routing/routes.dart';
 
-class TopicDetailScreen extends StatelessWidget {
-  final String topic = "Warranties";
+class TopicDetailScreen extends ConsumerStatefulWidget {
+  final TopicResponse topic;
 
+  const TopicDetailScreen({super.key, required this.topic});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TopicDetailScreenState();
+}
+
+class _TopicDetailScreenState extends ConsumerState<TopicDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,14 +27,14 @@ class TopicDetailScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          topic,
+          widget.topic.topicName,
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: Icon(Icons.emoji_events_outlined, color: Colors.orange),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -39,8 +50,10 @@ class TopicDetailScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text("Điểm số mới nhất được ghi lại",
-                      style: TextStyle(color: Colors.grey[600])),
+                  Text(
+                    "Điểm số mới nhất được ghi lại",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
                   const SizedBox(height: 10),
                   Stack(
                     alignment: Alignment.center,
@@ -49,17 +62,22 @@ class TopicDetailScreen extends StatelessWidget {
                         width: 130,
                         height: 130,
                         child: CircularProgressIndicator(
-                          value: 0.0,
+                          value: widget.topic.accuracy / 100.0,
                           strokeWidth: 10,
                           backgroundColor: Colors.grey[300],
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.blue,
+                          ),
                         ),
                       ),
                       Text(
-                        "0%\nChính xác",
+                        "${widget.topic.accuracy}%\nChính xác",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      )
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -76,7 +94,15 @@ class TopicDetailScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text("Học"),
+                          child: TextButton(
+                            onPressed:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  Routes.flashCard,
+                                  arguments: widget.topic.id
+                                ),
+                            child: Text("Học"),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -102,16 +128,26 @@ class TopicDetailScreen extends StatelessWidget {
           ),
 
           // Stats
-          _buildStatRow("Đã thuộc", 0, Colors.green, Icons.check_circle_outline),
+          _buildStatRow(
+            "Đã thuộc",
+            widget.topic.memorized,
+            Colors.green,
+            Icons.check_circle_outline,
+          ),
           _buildStatRow("Chưa thuộc", 0, Colors.red, Icons.cancel_outlined),
-          _buildStatRow("Chưa học", 12, Colors.orange, Icons.auto_stories, hasAction: true),
+          _buildStatRow(
+            "Chưa học",
+            widget.topic.notStudied,
+            Colors.orange,
+            Icons.auto_stories,
+          ),
           _buildStatRow("Đánh dấu", 0, Colors.pink, Icons.bookmark_border),
         ],
       ),
     );
   }
 
-  Widget _buildStatRow(String label, int count, Color color, IconData icon, {bool hasAction = false}) {
+  Widget _buildStatRow(String label, int count, Color color, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       child: Container(
@@ -127,16 +163,20 @@ class TopicDetailScreen extends StatelessWidget {
             Expanded(
               child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            Text(count.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              count.toString(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(width: 12),
-            Text("Trống", style: TextStyle(color: Colors.grey)),
-            if (hasAction) ...[
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: () {},
-                child: Text("Luyện tập >", style: TextStyle(color: Colors.blue)),
-              ),
-            ]
+            count == 0
+                ? Text("Trống", style: TextStyle(color: Colors.grey))
+                : TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Luyện tập >",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
           ],
         ),
       ),

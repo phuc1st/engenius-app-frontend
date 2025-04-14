@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/repositories/learn_vocabulary/learn_vocabulary_repository.dart';
 import 'package:toeic/data/repositories/learn_vocabulary/mock_learn_vocabulary_repository.dart';
 import 'package:toeic/data/services/api/api_clients/learn_vocabulary_api_client.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/flash_card_response.dart';
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
+import 'package:toeic/ui/learn_vocabulary/flash_card/view_models/flash_card_view_model.dart';
 import 'package:toeic/ui/learn_vocabulary/vocabulary/view_models/vocabulary_view_model.dart';
 
 final learnVocabularyApiClientProvider = Provider<LearnVocabularyApiClient>((
@@ -24,6 +26,16 @@ final vocabularyViewModelProvider = StateNotifierProvider<
 >((ref) {
   final learnVocabularyRepository = ref.read(learnVocabularyRepositoryProvider);
   return VocabularyViewModel(
+    learnVocabularyRepository: MockLearnVocabularyRepository(),
+  );
+});
+
+final flashCardViewModelProvider = StateNotifierProvider<
+    FlashCardViewModel,
+    AsyncValue<List<FlashCardResponse>>
+>((ref) {
+  final learnVocabularyRepository = ref.read(learnVocabularyRepositoryProvider);
+  return FlashCardViewModel(
     learnVocabularyRepository: MockLearnVocabularyRepository(),
   );
 });
