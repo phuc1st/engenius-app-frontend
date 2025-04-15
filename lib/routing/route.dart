@@ -26,7 +26,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => TopicDetailScreen(topic: topic));
     case Routes.flashCard:
       final topicId = settings.arguments as String;
-      return MaterialPageRoute(builder: (_) => FlashCardScreen(topicId: topicId));
+      return MaterialPageRoute(builder: (_) => FlashcardScreen2(topicId: topicId));
     /*case chat:
       print("Nav to chat");
       final receivedId = settings.arguments as String;
