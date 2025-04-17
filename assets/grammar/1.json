@@ -1,0 +1,57 @@
+{
+  "title": "12 Thì Cơ Bản Trong Tiếng Anh",
+  "sections": [
+    {
+      "sectionTitle": "1. Tenses: Thì",
+      "data": "Kiến thức cơ bản đầu tiên mà mọi người học tiếng Anh đều cần nhớ đó là kiến thức về 12 thì trong tiếng Anh. Đây là một chủ điểm ngữ pháp quan trọng, giúp ta hiểu rằng thì của động từ không chỉ là cách thay đổi hình thức của động từ để thể hiện thời gian mà còn để xác định thời điểm hành động diễn ra trong câu.\n\nTrong tiếng Anh, có ba thời kỳ chính: hiện tại, quá khứ và tương lai. Mỗi thời kỳ chia thành bốn thể: đơn, tiếp diễn, hoàn thành và hoàn thành tiếp diễn. Nắm vững 12 thì này là nền tảng giúp người học tự tin giao tiếp và đạt kết quả tốt trong các kỳ thi như TOEIC."
+    },
+    {
+      "sectionTitle": "Present Simple",
+      "data": "Formulas:\n- Khẳng định: S + V(s/es) + O\n- Phủ định: S + do/does not + V-inf\n- Nghi vấn: Do/Does + S + V-inf? | Wh- + do/does + S + V-inf?\n\nSignal Words: every day, never, sometimes, often, usually, always"
+    },
+    {
+      "sectionTitle": "Present Continuous",
+      "data": "Formulas:\n- Khẳng định: S + am/is/are + V-ing + O\n- Phủ định: S + am not/isn't/aren't + V-ing\n- Nghi vấn: Am/Is/Are + S + V-ing? | Wh- + am/is/are + S + V-ing?\n\nSignal Words: now, at the moment, currently, right now"
+    },
+    {
+      "sectionTitle": "Present Perfect",
+      "data": "Formulas:\n- Khẳng định: S + have/has + V3 (or V-ed) + O\n- Phủ định: S + have/has not + V3 (or V-ed)\n- Nghi vấn: Have/Has + S + V3? | Wh- + have/has + S + V3?\n\nSignal Words: already, yet, just, recently, since, for"
+    },
+    {
+      "sectionTitle": "Present Perfect Continuous",
+      "data": "Formulas:\n- Khẳng định: S + have/has been + V-ing + O\n- Phủ định: S + have/has not been + V-ing\n- Nghi vấn: Have/Has + S + been + V-ing? | Wh- + have/has + S + been + V-ing?\n\nSignal Words: for, since, how long"
+    },
+    {
+      "sectionTitle": "Past Simple",
+      "data": "Formulas:\n- Khẳng định: S + V2 (hoặc V-ed) + O\n- Phủ định: S + did not + V-inf\n- Nghi vấn: Did + S + V-inf? | Wh- + did + S + V-inf?\n\nSignal Words: yesterday, last (year, month, week), in 1990, ago"
+    },
+    {
+      "sectionTitle": "Past Continuous",
+      "data": "Formulas:\n- Khẳng định: S + was/were + V-ing + O\n- Phủ định: S + was/were not + V-ing\n- Nghi vấn: Was/Were + S + V-ing? | Wh- + was/were + S + V-ing?\n\nSignal Words: while, when, at 7 PM, at that moment"
+    },
+    {
+      "sectionTitle": "Past Perfect",
+      "data": "Formulas:\n- Khẳng định: S + had + V3 (hoặc V-ed) + O\n- Phủ định: S + had not + V3 (hoặc V-ed)\n- Nghi vấn: Had + S + V3? | Wh- + had + S + V3?\n\nSignal Words: before, by the time"
+    },
+    {
+      "sectionTitle": "Past Perfect Continuous",
+      "data": "Formulas:\n- Khẳng định: S + had been + V-ing + O\n- Phủ định: S + had not been + V-ing\n- Nghi vấn: Had + S + been + V-ing? | Wh- + had + S + been + V-ing?\n\nSignal Words: for, since, before"
+    },
+    {
+      "sectionTitle": "Future Simple",
+      "data": "Formulas:\n- Khẳng định: S + will + V (dạng nguyên thể) + O\n- Phủ định: S + will not (won't) + V (dạng nguyên thể)\n- Nghi vấn: Will + S + V? | Wh- + will + S + V?\n\nSignal Words: tomorrow, next (year, month, week), in the future"
+    },
+    {
+      "sectionTitle": "Future Continuous",
+      "data": "Formulas:\n- Khẳng định: S + will be + V-ing + O\n- Phủ định: S + will not be + V-ing\n- Nghi vấn: Will + S + be + V-ing? | Wh- + will + S + be + V-ing?\n\nSignal Words: at this time tomorrow, in a few days"
+    },
+    {
+      "sectionTitle": "Future Perfect",
+      "data": "Formulas:\n- Khẳng định: S + will have + V3 (or V-ed) + O\n- Phủ định: S + will not have + V3 (or V-ed)\n- Nghi vấn: Will + S + have + V3? | Wh- + will + S + have + V3?\n\nSignal Words: by next week, by 2025, before"
+    },
+    {
+      "sectionTitle": "Future Perfect Continuous",
+      "data": "Formulas:\n- Khẳng định: S + will have been + V-ing + O\n- Phủ định: S + will not have been + V-ing\n- Nghi vấn: Will + S + have been + V-ing? | Wh- + will + S + have been + V-ing?\n\nSignal Words: for, since, by the time"
+    }
+  ]
+}

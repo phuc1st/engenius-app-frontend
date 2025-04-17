@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toeic/config/assets_url.dart';
 import 'package:toeic/data/services/local/model/grammar_model.dart';
-import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_section.dart';
 
 class GrammarDetailScreen extends StatelessWidget {
   final String grammarId;
@@ -13,7 +12,9 @@ class GrammarDetailScreen extends StatelessWidget {
 
   Future<(String title, String description, List<GrammarSection> sections)>
   _loadGrammar(String grammarId) async {
-    final jsonString = await rootBundle.loadString("${AssetsUrl.grammarUrl}/$grammarId.${AssetsUrl.grammarFileType}");
+    final jsonString = await rootBundle.loadString(
+      "${AssetsUrl.grammarUrl}/$grammarId.${AssetsUrl.grammarFileType}",
+    );
     final data = json.decode(jsonString);
 
     final String title = data['title'] ?? 'No title';
@@ -46,15 +47,30 @@ class GrammarDetailScreen extends StatelessWidget {
         final (title, description, sections) = snapshot.data!;
         return Scaffold(
           appBar: AppBar(title: Text(title)),
-          body: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text(description, style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 16),
-              ...sections.map(
-                (section) => GrammarSectionWidget(section: section),
-              ),
-            ],
+          body: ListView.builder(
+            padding: EdgeInsets.all(16),
+            itemCount: sections.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    sections[index].sectionTitle,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      sections[index].data,
+                      textAlign: TextAlign.justify,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              );
+            },
           ),
         );
       },
