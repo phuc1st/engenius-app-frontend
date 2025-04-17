@@ -5,4 +5,6 @@ final class Routes{
   static const vocabulary = 'vocabulary';
   static const topicDetail = 'topicDetail';
   static const flashCard = 'flashCard';
+  static const grammar = '/$grammarDetail';
+  static const grammarDetail = 'grammarDetail';
 }

@@ -3,6 +3,8 @@ import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_re
 import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/auth/login/widgets/login_screen.dart';
 import 'package:toeic/ui/auth/sign_up/widgets/sign_up_screen.dart';
+import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_detail_screen.dart';
+import 'package:toeic/ui/grammar/list_grammar/widgets/grammar_screen.dart';
 import 'package:toeic/ui/home/widgets/home.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.dart';
 import 'package:toeic/ui/learn_vocabulary/topic_detail/widgets/topic_detail_screen.dart';
@@ -27,6 +29,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.flashCard:
       final topicId = settings.arguments as String;
       return MaterialPageRoute(builder: (_) => FlashcardScreen2(topicId: topicId));
+    case Routes.grammar:
+      return MaterialPageRoute(builder: (_)=> GrammarListScreen());
+    case Routes.grammarDetail:
+      final grammarId = settings.arguments as String;
+      return MaterialPageRoute(builder: (_)=> GrammarDetailScreen(grammarId: grammarId));
     /*case chat:
       print("Nav to chat");
       final receivedId = settings.arguments as String;

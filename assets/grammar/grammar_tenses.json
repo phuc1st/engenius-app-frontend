@@ -1,0 +1,86 @@
+{
+  "title": "12 Thì Cơ Bản Trong Tiếng Anh",
+  "description": "Bảng tổng hợp công thức, cách dùng và dấu hiệu nhận biết của các thì trong tiếng Anh.",
+  "sections": [
+    {
+      "sectionTitle": "Present Tenses",
+      "items": [
+        {
+          "name": "Present Simple",
+          "formulas": {
+            "affirmative": ["S + V(s/es) + O"],
+            "negative": ["S + do/does not + V-inf"],
+            "question": [
+              "Do/Does + S + V-inf?",
+              "Wh- + do/does + S + V-inf?"
+            ]
+          },
+          "signalWords": [
+            "every day", "always", "usually", "often", "sometimes", "never"
+          ]
+        },
+        {
+          "name": "Present Continuous",
+          "formulas": {
+            "affirmative": ["S + am/is/are + V-ing + O"],
+            "negative": ["S + am/is/are + not + V-ing + O"],
+            "question": [
+              "Am/Is/Are + S + V-ing + O?",
+              "Wh- + am/is/are + S + V-ing + O?"
+            ]
+          },
+          "signalWords": [
+            "now", "right now", "currently", "at the moment"
+          ]
+        },
+        {
+          "name": "Present Perfect",
+          "formulas": {
+            "affirmative": ["S + have/has + V3/ed + O"],
+            "negative": ["S + have/has + not + V3/ed + O"],
+            "question": [
+              "Have/Has + S + V3/ed + O?",
+              "Wh- + have/has + S + V3/ed + O?"
+            ]
+          },
+          "signalWords": [
+            "already", "ever", "never", "since", "for", "just", "yet"
+          ]
+        }
+      ]
+    },
+    {
+      "sectionTitle": "Past Tenses",
+      "items": [
+        {
+          "name": "Past Simple",
+          "formulas": {
+            "affirmative": ["S + V2/ed + O"],
+            "negative": ["S + did not + V-inf + O"],
+            "question": [
+              "Did + S + V-inf?",
+              "Wh- + did + S + V-inf?"
+            ]
+          },
+          "signalWords": [
+            "yesterday", "last night", "last week", "in + year"
+          ]
+        },
+        {
+          "name": "Past Continuous",
+          "formulas": {
+            "affirmative": ["S + was/were + V-ing + O"],
+            "negative": ["S + was/were + not + V-ing + O"],
+            "question": [
+              "Was/Were + S + V-ing + O?",
+              "Wh- + was/were + S + V-ing + O?"
+            ]
+          },
+          "signalWords": [
+            "while", "when", "at that moment"
+          ]
+        }
+      ]
+    }
+  ]
+}
