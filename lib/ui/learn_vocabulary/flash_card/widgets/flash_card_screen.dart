@@ -107,5 +107,3 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen2> {
     );
   }
 }
-
-// ToDo viewmodel cho flashcard, save cho nó, if before change and after change different, save

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/routing/route.dart';
 import 'package:toeic/routing/routes.dart';
+import 'package:toeic/ui/AIConversation/widgets/ai_chat_screen.dart';
 import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_detail_screen.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.dart';
 import 'package:toeic/utils/temp.dart';
 import 'package:toeic/utils/test.dart';
 
-void main() {
+void main() async{
+  await dotenv.load(fileName: ".env");
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -37,9 +40,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: Routes.grammar,
-      onGenerateRoute: generateRoute
-      // home:
+      // initialRoute: Routes.grammar,
+      // onGenerateRoute: generateRoute
+      home: AIChatScreen()
     );
   }
 }

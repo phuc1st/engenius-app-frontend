@@ -1,224 +1,125 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class FlashCardResponse {
-  final String word;
-  final String pronunciation;
-  final String imageUrl;
-  final bool memorized;
-
-  FlashCardResponse({
-    required this.word,
-    required this.pronunciation,
-    required this.imageUrl,
-    this.memorized = false,
-  });
-
-  FlashCardResponse copyWith({
-    String? word,
-    String? pronunciation,
-    String? imageUrl,
-    bool? memorized,
-  }) {
-    return FlashCardResponse(
-      word: word ?? this.word,
-      pronunciation: pronunciation ?? this.pronunciation,
-      imageUrl: imageUrl ?? this.imageUrl,
-      memorized: memorized ?? this.memorized,
-    );
-  }
-}
-
-class FlashcardScreen extends ConsumerStatefulWidget {
-  const FlashcardScreen({super.key});
-
-  @override
-  ConsumerState<FlashcardScreen> createState() => _FlashcardScreenState();
-}
-
-class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
-  int currentIndex = 0;
-
-  final List<FlashCardResponse> flashCards = [
-    FlashCardResponse(
-      word: "consequence",
-      pronunciation: "/ˈkɒnsɪkwəns/",
-      imageUrl: "https://i.imgur.com/BfTQbqM.png", // Replace with your image
-    ),
-    // Thêm các flashcard khác
-  ];
-
-  final List<FlashCardResponse> learnedFlashcards = [];
-
-  void _handleSwipe(bool isRight) {
-    final currentCard = flashCards[currentIndex];
-    final updatedCard = currentCard.copyWith(memorized: isRight);
-    learnedFlashcards.add(updatedCard);
-
-    setState(() {
-      currentIndex++;
-    });
-
-    if (currentIndex >= flashCards.length) {
-      _saveResultsAndNavigate();
-    }
-  }
-
-  void _saveResultsAndNavigate() {
-    // TODO: Lưu kết quả lên server hoặc điều hướng sang trang kết quả
-    print("Bạn đã học xong. Kết quả:");
-    for (final card in learnedFlashcards) {
-      print("${card.word} - ${card.memorized ? 'Đã hiểu' : 'Học lại'}");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (flashCards.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (currentIndex >= flashCards.length) {
-      return const Center(child: Text("Bạn đã hoàn thành tất cả flashcard!"));
-    }
-
-    return Scaffold(
-      appBar: AppBar(title: const Text("Flashcards")),
-      body: Center(
-        child: DraggableFlashCard(
-          flashCard: flashCards[currentIndex],
-          onSwipe: _handleSwipe,
-        ),
-      ),
-    );
-  }
-}
-
-class DraggableFlashCard extends StatefulWidget {
-  final FlashCardResponse flashCard;
-  final void Function(bool isRight) onSwipe;
-
-  const DraggableFlashCard({
-    super.key,
-    required this.flashCard,
-    required this.onSwipe,
-  });
-
-  @override
-  State<DraggableFlashCard> createState() => _DraggableFlashCardState();
-}
-
-class _DraggableFlashCardState extends State<DraggableFlashCard>
-    with SingleTickerProviderStateMixin {
-  Offset position = Offset.zero;
-  double angle = 0;
-
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this);
-  }
-
-  void _handlePanUpdate(DragUpdateDetails details) {
-    setState(() {
-      position += details.delta;
-      angle = position.dx / 300;
-    });
-  }
-
-  void _handlePanEnd(DragEndDetails details) {
-    final velocity = details.velocity.pixelsPerSecond.dx;
-
-    if (position.dx > 150 || velocity > 1000) {
-      widget.onSwipe(true); // Swipe right
-    } else if (position.dx < -150 || velocity < -1000) {
-      widget.onSwipe(false); // Swipe left
-    } else {
-      setState(() {
-        position = Offset.zero;
-        angle = 0;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isRight = position.dx > 0;
-    final isSwiping = position.dx.abs() > 20;
-
-    return GestureDetector(
-      onPanUpdate: _handlePanUpdate,
-      onPanEnd: _handlePanEnd,
-      child: Transform.translate(
-        offset: position,
-        child: Transform.rotate(
-          angle: angle,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 8,
-                child: Container(
-                  width: 320,
-                  height: 480,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.network(widget.flashCard.imageUrl, height: 180),
-                      const SizedBox(height: 24),
-                      Text(
-                        widget.flashCard.word,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.flashCard.pronunciation,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (isSwiping)
-                Positioned(
-                  top: 20,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isRight ? Colors.green : Colors.orange,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      isRight ? 'Đã Hiểu' : 'Học lại',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+// import 'package:flutter/material.dart';
+//
+// class ChatScreen extends StatelessWidget {
+//   const ChatScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFFF5F7FF),
+//       appBar: AppBar(
+//         backgroundColor: Colors.transparent,
+//         elevation: 0,
+//         leading: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+//         title: const Text(
+//           'Trúc cute',
+//           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+//         ),
+//         actions: const [
+//           Icon(Icons.call, color: Colors.black),
+//           SizedBox(width: 12),
+//           Icon(Icons.videocam, color: Colors.black),
+//           SizedBox(width: 12),
+//         ],
+//       ),
+//       body: Column(
+//         children: [
+//           const Padding(
+//             padding: EdgeInsets.symmetric(vertical: 10),
+//             child: Center(
+//               child: Chip(label: Text('Hôm nay')),
+//             ),
+//           ),
+//           Expanded(
+//             child: ListView(
+//               padding: const EdgeInsets.all(12),
+//               children: [
+//                 Text("thú 6 ngày 12", textWidthBasis: TextWidthBasis.longestLine, textAlign: TextAlign.center,),
+//                buildMsg(context, true, "Hello"),
+//                 buildMsg(context, true, "ngắn"),
+//                 buildMsg(context, false, "Hello"),
+//                 buildMsg(context, true, "Hello"),
+//                 buildMsg(context, false, "ngắn"),
+//                 buildMsg(context, true, "dàiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"),
+//                 buildMsg(context, false, "dàiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"),
+//               ],
+//             ),
+//           ),
+//           _buildInputField(),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget buildMsg(BuildContext context, bool isSentByMe, String message) {
+//     return Row(
+//       // Dùng MainAxisAlignment để căn chỉnh vị trí tin nhắn
+//       mainAxisAlignment:
+//       isSentByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+//       children: [
+//         Container(
+//           // Giới hạn chiều rộng tối đa là 70% của màn hình
+//           constraints: BoxConstraints(
+//             maxWidth: MediaQuery.of(context).size.width * 0.7,
+//           ),
+//           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+//           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+//           decoration: BoxDecoration(
+//             // Nền màu khác nhau dựa trên người gửi
+//             color: isSentByMe ? Colors.blue : Colors.grey[300],
+//             borderRadius: BorderRadius.circular(16),
+//           ),
+//           child: Text(
+//             message,
+//             style: TextStyle(
+//               color: isSentByMe ? Colors.white : Colors.black87,
+//               fontSize: 16,
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildImageBubble() {
+//     return Container(
+//       width: 60,
+//       height: 60,
+//       decoration: BoxDecoration(
+//         color: Colors.black,
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildInputField() {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+//       child: Row(
+//         children: [
+//           Expanded(
+//             child: TextField(
+//               decoration: InputDecoration(
+//                 hintText: 'Soạn tin nhắn',
+//                 filled: true,
+//                 fillColor: Colors.white,
+//                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//                 border: OutlineInputBorder(
+//                   borderRadius: BorderRadius.circular(24),
+//                   borderSide: BorderSide.none,
+//                 ),
+//               ),
+//             ),
+//           ),
+//           const SizedBox(width: 8),
+//           const CircleAvatar(
+//             backgroundColor: Color(0xFF256DFF),
+//             child: Icon(Icons.mic, color: Colors.white),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// void main() => runApp(const MaterialApp(home: ChatScreen()));
