@@ -3,7 +3,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:toeic/data/services/api/gemini.dart';
-import 'package:toeic/ui/AIConversation/view_models/ai_chat_screen_state.dart';
+import 'package:toeic/ui/ai_conversation/view_models/ai_chat_screen_state.dart';
 
 class AIChatViewModel extends StateNotifier<AIChatScreenState> {
   final GeminiService _geminiService = GeminiService();
@@ -18,10 +18,10 @@ class AIChatViewModel extends StateNotifier<AIChatScreenState> {
   ///  - Cuối cùng, thêm "Assistant:" ở cuối để dấu hiệu yêu cầu phản hồi.
   String get conversationPrompt {
     String prompt =
-        "You are a friendly and supportive AI AIConversation partner who helps users"
+        "You are a friendly and supportive AI conversation partner who helps users"
         " practice English speaking.Always respond only in natural, fluent English, "
-        "as if you are a native speaker having a casual AIConversation.Your goal is to "
-        "keep the AIConversation engaging, correct subtle mistakes gently if needed, and "
+        "as if you are a native speaker having a casual conversation.Your goal is to "
+        "keep the conversation engaging, correct subtle mistakes gently if needed, and "
         "encourage the user to speak more.Keep your replies clear and concise, "
         "and ask follow-up questions to continue the dialogue.";
 
@@ -49,7 +49,11 @@ class AIChatViewModel extends StateNotifier<AIChatScreenState> {
       ...state.voiceMessageList,
       VoiceMessage(message: userMsg.trim(), isMe: true),
     ];
-    state = state.copyWith(voiceMessageList: updatedChats, isWaitingAIReply: true);
+    state = state.copyWith(
+      voiceMessageList: updatedChats,
+      isWaitingAIReply: true,
+      audioToTextData: '',
+    );
 
     // Tạo prompt sử dụng toàn bộ cuộc hội thoại cùng với system prompt ban đầu
     final prompt = conversationPrompt;
@@ -64,9 +68,7 @@ class AIChatViewModel extends StateNotifier<AIChatScreenState> {
           VoiceMessage(message: aiResponse.trim(), isMe: false),
         ],
       );
-
-      if (state.permissionToAISpeak) tts.speak(aiResponse.trim());
-
+      aiSpeak(aiResponse);
     } catch (e) {
       state = state.copyWith(
         voiceMessageList: [
@@ -82,27 +84,45 @@ class AIChatViewModel extends StateNotifier<AIChatScreenState> {
   Future<void> handleSpeaking() async {
     _requestPermission();
     if (!state.isListening) {
-      bool available = await speech.initialize();
+      bool available = await speech.initialize(
+        onStatus: (status) {
+          print('Speech status: $status');
+          if (status == 'notListening' && state.isListening) {
+            // Speech tự kết thúc (timeout hoặc lỗi)
+            state = state.copyWith(isListening: false);
+
+          }
+        },
+        onError: (error) {
+          print('Speech error: $error');
+          state = state.copyWith(isListening: false);
+        },
+      );
       if (available) {
-        state = state.copyWith(isListening: true);
+        state = state.copyWith(isListening: true, audioToTextData: '');
         speech.listen(
           onResult: (result) {
             state = state.copyWith(audioToTextData: result.recognizedWords);
           },
           localeId: 'en_US',
+          pauseFor: Duration(seconds: 20),
+          listenFor: Duration(minutes: 2),
+          listenOptions: SpeechListenOptions(
+            partialResults: true,
+            listenMode: ListenMode.dictation, // dùng ở đây, không bị deprecated
+          ),
         );
       }
-    } else {
+    } else { //dừng nghe thi lam
       state = state.copyWith(isListening: false);
       await speech.stop();
-      // if (state.audioToTextData.isNotEmpty) {
-      //   sendMessage(state.audioToTextData);
-      //   state = state.copyWith(audioToTextData: '');
-      // }
+      if (state.audioToTextData.isNotEmpty && state.autoSendVoiceMessage) {
+        sendMessage(state.audioToTextData);
+      }
     }
   }
 
-  void togglePermissionToAISpeak(){
+  void togglePermissionToAISpeak() {
     state = state.copyWith(permissionToAISpeak: !state.permissionToAISpeak);
   }
 
@@ -111,12 +131,22 @@ class AIChatViewModel extends StateNotifier<AIChatScreenState> {
     var status = await Permission.microphone.request();
   }
 
+  void aiSpeak(String speech) {
+    if (state.permissionToAISpeak) {
+      tts.speak(speech.trim());
+    }
+  }
+
+  void toggleAutoSendVoiceMessage() {
+    state = state.copyWith(autoSendVoiceMessage: !state.autoSendVoiceMessage);
+  }
+
   void clearChat() {
     state = const AIChatScreenState(voiceMessageList: []);
   }
 }
 
-final chatProvider =
+final aiChatProvider =
     StateNotifierProvider<AIChatViewModel, AIChatScreenState>(
       (ref) => AIChatViewModel(),
     );

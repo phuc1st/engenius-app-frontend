@@ -11,13 +11,15 @@ class AIChatScreenState {
   final bool isWaitingAIReply;
   final bool permissionToAISpeak;
   final String audioToTextData;
+  final bool autoSendVoiceMessage;
 
   const AIChatScreenState({
     required this.voiceMessageList,
     this.isListening = false,
     this.isWaitingAIReply = false,
     this.audioToTextData = '',
-    this.permissionToAISpeak = true
+    this.permissionToAISpeak = true,
+    this.autoSendVoiceMessage = false
   });
 
   AIChatScreenState copyWith({
@@ -25,14 +27,16 @@ class AIChatScreenState {
     bool? isListening,
     bool? isWaitingAIReply,
     String? audioToTextData,
-    bool? permissionToAISpeak
+    bool? permissionToAISpeak,
+    bool? autoSendVoiceMessage
   }) {
     return AIChatScreenState(
       voiceMessageList: voiceMessageList ?? this.voiceMessageList,
       isListening: isListening ?? this.isListening,
       isWaitingAIReply: isWaitingAIReply ?? this.isWaitingAIReply,
       audioToTextData: audioToTextData ?? this.audioToTextData,
-      permissionToAISpeak: permissionToAISpeak ?? this.permissionToAISpeak
+      permissionToAISpeak: permissionToAISpeak ?? this.permissionToAISpeak,
+      autoSendVoiceMessage: autoSendVoiceMessage ?? this.autoSendVoiceMessage
     );
   }
 }

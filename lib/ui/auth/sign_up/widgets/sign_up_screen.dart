@@ -69,7 +69,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                Image.asset('images/cat.png', height: 100),
+                Image.asset('assets/images/cat.png', height: 100),
                 const SizedBox(height: 10),
                 RichText(
                   text: const TextSpan(
@@ -106,7 +106,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 const SizedBox(height: 10),
                 OutlinedButton.icon(
                   onPressed: () {},
-                  icon: Image.asset('images/cat.png', height: 24),
+                  icon: Image(image: AssetImage('images/cat.png'),height: 24,),
                   label: const Text("Sign in with Google", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.all(10),
@@ -207,3 +207,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 }
+//TODO  icon: Image(image: AssetImage('images/cat.png'),height: 24
+// Image.asset('assets/images/cat.png', height: 100) đều hoạt đông trên web
+// Image.asset('assets/images/cat.png', height: 100), - mobile chi hoat dong cai nay

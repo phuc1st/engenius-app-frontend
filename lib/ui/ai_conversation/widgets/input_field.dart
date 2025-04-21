@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/ui/AIConversation/view_models/ai_chat_view_model.dart';
+import 'package:toeic/ui/ai_conversation/view_models/ai_chat_view_model.dart';
 
 class InputField extends ConsumerWidget {
   final TextEditingController controller;
@@ -14,8 +14,8 @@ class InputField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final audioText = ref.watch(chatProvider.select((s) => s.audioToTextData));
-    final bool isListening = ref.watch(chatProvider.select((s) => s.isListening));
+    final audioText = ref.watch(aiChatProvider.select((s) => s.audioToTextData));
+    final bool isListening = ref.watch(aiChatProvider.select((s) => s.isListening));
 
     controller.text = audioText;
     controller.selection = TextSelection.fromPosition(
@@ -49,7 +49,7 @@ class InputField extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           GestureDetector(
-            onTap: () => ref.read(chatProvider.notifier).handleSpeaking(),
+            onTap: ref.read(aiChatProvider.notifier).handleSpeaking,
             child: CircleAvatar(
               backgroundColor: const Color(0xFF256DFF),
               child: Icon(
