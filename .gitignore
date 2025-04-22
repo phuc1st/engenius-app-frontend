@@ -46,6 +46,6 @@ app.*.map.json
 
 lib/main.dart
 lib/utils/temp.dart
-lib/utils/test.dart.dart
+lib/utils/test.dart
 
 *.env

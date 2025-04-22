@@ -17,9 +17,12 @@ class FullTestScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.workspace_premium_outlined, color: Colors.amber),
+            icon: const Icon(
+              Icons.workspace_premium_outlined,
+              color: Colors.amber,
+            ),
             onPressed: () {},
-          )
+          ),
         ],
       ),
       body: ListView.builder(
@@ -27,84 +30,150 @@ class FullTestScreen extends StatelessWidget {
         itemCount: tests.length,
         itemBuilder: (context, index) {
           final testNumber = tests[index];
-          final isOngoing = testNumber == 1 || testNumber == 3;
+          final isTakingTest = testNumber == 1 || testNumber == 3;
           final isNew = testNumber == 2 || testNumber == 4;
 
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
-              ],
+          return testItem(
+            testNumber: testNumber,
+            isTakingTest: isTakingTest,
+            isNew: isNew,
+            onTap: onTestItemTap
+          );
+        },
+      ),
+      backgroundColor: Colors.white,
+    );
+  }
+
+  Widget testItem({
+    required int testNumber,
+    required bool isTakingTest,
+    bool isNew = false,
+    double? score,
+    required void Function(int) onTap,
+  }) {
+    return GestureDetector(
+      onTap: () => onTap(testNumber),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade400,
+              blurRadius: 0.2,
+              offset: Offset(0, 2),
             ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              title: Row(
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  Image.asset(
-                    'assets/images/cat.png',
-                    width: 28,
-                    height: 28,
+                  Icon(
+                    Icons.auto_stories,
+                    size: 28,
+                    color: Colors.lightBlueAccent,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("TEST $testNumber",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
-                        if (isOngoing)
-                          const Text(
-                            "🗣️ Bài kiểm tra đang diễn ra...",
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                              fontSize: 13,
-                            ),
+                        Text(
+                          "TEST $testNumber",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (isTakingTest)
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.wifi_tethering_rounded,
+                                size: 20,
+                                color: Colors.lightBlueAccent,
+                              ),
+                              const Text(
+                                "Bài kiểm tra đang diễn ra...",
+                                style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
                           ),
                       ],
                     ),
                   ),
                   if (isNew)
                     Container(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        "+ Mới",
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.auto_awesome_sharp,
+                            color: Colors.blueAccent,
+                            size: 16,
+                          ),
+                          const Text(
+                            " Mới",
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
-                    )
+                    ),
                 ],
               ),
-              subtitle: const Padding(
-                padding: EdgeInsets.only(top: 8.0),
-                child: Text(
-                  "Điểm của bạn: Không có dữ liệu",
-                  style: TextStyle(fontSize: 13),
+              SizedBox(height: 16),
+              Container(
+                padding: EdgeInsetsGeometry.only(left: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey, width: 1),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Điểm của bạn: ${score ?? "Không có dữ liệu"}",
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFAA84F3),
+                        borderRadius: BorderRadius.circular(19.5),
+                      ),
+                      child: const Icon(
+                        Icons.double_arrow,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              trailing: const Icon(
-                Icons.double_arrow_rounded,
-                color: Colors.deepPurple,
-                size: 28,
-              ),
-              onTap: () {
-                // Xử lý khi nhấn vào test
-              },
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       ),
-      backgroundColor: const Color(0xFFF5F6FA),
     );
+  }
+
+  void onTestItemTap(int testNumber){
+    print("Tap on: $testNumber");
   }
 }
