@@ -7,6 +7,8 @@ import 'package:toeic/ui/ai_conversation/widgets/ai_chat_screen.dart';
 import 'package:toeic/ui/auth/sign_up/widgets/sign_up_screen.dart';
 import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_detail_screen.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.dart';
+import 'package:toeic/ui/toeic_practice/list_test/widgets/list_test_screen.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/toeic_test_screen.dart';
 import 'package:toeic/utils/temp.dart';
 import 'package:toeic/utils/test.dart';
 
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
       ),
       // initialRoute: Routes.grammar,
       // onGenerateRoute: generateRoute
-      home: AIChatScreen()
+      home: TestScreen()
     );
   }
 }

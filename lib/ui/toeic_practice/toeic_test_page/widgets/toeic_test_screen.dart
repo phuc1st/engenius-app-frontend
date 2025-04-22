@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/audio_player.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/bottom_action_bar.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_overview_bottom_sheet.dart';
 
 void main() {
   runApp(const TestApp());
@@ -32,11 +35,19 @@ class _TestScreenState extends State<TestScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return const OverviewBottomSheet();
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return QuestionOverviewBottomSheet(
+          totalQuestions: 100,
+          answeredQuestions: {2, 5, 9, 15, 22},
+          onQuestionTap: (q) {
+            print('Đi tới câu $q');
+            Navigator.pop(context);
+          },
+          onSubmit: () {
+            print('Nộp bài kiểm tra');
+          },
+        );
       },
     );
   }
@@ -49,47 +60,25 @@ class _TestScreenState extends State<TestScreen> {
         title: const Text("TEST 1"),
         automaticallyImplyLeading: false,
       ),
-      bottomNavigationBar: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: _showOverviewBottomSheet,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text(
-            "Tổng quan & Nộp bài",
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
+      bottomNavigationBar: BottomActionBar(
+        onBack: () => print("Back"),
+        onOverviewSubmit: _showOverviewBottomSheet,
+        onNext: () => print("Next"),
       ),
+
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Thời gian ở góc trên bên trái
-              const Text(
-                "9:55 PM",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              // Tiêu đề ở giữa
-              Center(
-                child: Text(
-                  "TEST 1",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
               // Progress bar và đồng hồ đếm ngược
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text("Question 1", style: TextStyle(color: Colors.green.shade700),),
+                  const SizedBox(width: 6,),
                   Expanded(
                     flex: 3,
                     child: LinearProgressIndicator(
@@ -100,13 +89,29 @@ class _TestScreenState extends State<TestScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      "01:58:03",
-                      textAlign: TextAlign.end,
-                      style: TextStyle(fontSize: 16),
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey
                     ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "100",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(Icons.watch_later_outlined, color: Colors.blueAccent),
+                  SizedBox(width: 4),
+                  Text(
+                    "01:58:03",
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontSize: 16),
                   ),
                 ],
               ),
@@ -116,22 +121,10 @@ class _TestScreenState extends State<TestScreen> {
                 "Bản ghi âm",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              Card(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.play_circle_fill,
-                    size: 32,
-                    color: Colors.green,
-                  ),
-                  title: LinearProgressIndicator(
-                    value: 0.7,
-                    backgroundColor: Colors.grey[300],
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Colors.green,
-                    ),
-                  ),
-                ),
+              const SizedBox(height: 10),
+              AudioPlayerWidget(
+                audioUrl:
+                    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
               ),
               const SizedBox(height: 16),
               // Hình ảnh (placeholder)
@@ -141,7 +134,7 @@ class _TestScreenState extends State<TestScreen> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: NetworkImage(
-                      'https://via.placeholder.com/400x200.png?text=Hiking',
+                      'https://antimatter.vn/wp-content/uploads/2022/12/anh-meme-hai-lam-avatar.jpg',
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -228,158 +221,4 @@ class OptionTile extends StatelessWidget {
   }
 }
 
-/// Ví dụ widget BottomSheet (có thể giữ nguyên, không gây lỗi RenderFlex khi nội dung dài)
-class OverviewBottomSheet extends StatelessWidget {
-  const OverviewBottomSheet({Key? key}) : super(key: key);
-
-  // Hàm tạo widget cho từng nút câu hỏi
-  Widget _buildQuestionButton(BuildContext context, int number) {
-    bool isSelected = (number == 9); // Làm nổi bật câu hỏi số 9
-    return ElevatedButton(
-      onPressed: () {
-        // Xử lý chuyển đổi câu hỏi khi bấm vào nút (nếu cần)
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor:
-            isSelected ? Theme.of(context).primaryColor : Colors.grey[300],
-        foregroundColor: isSelected ? Colors.white : Colors.black,
-        fixedSize: const Size(48, 48),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        elevation: 0,
-      ),
-      child: Text(number.toString()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        // Sử dụng SingleChildScrollView để đảm bảo nội dung cuộn được nếu vượt quá chiều cao màn hình
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Thanh drag nhỏ ở đầu BottomSheet
-              Center(
-                child: Container(
-                  width: 50,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Center(
-                child: Text(
-                  "Tổng quan",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Thông tin tổng hợp số câu hỏi
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: const [
-                      Text("Tổng số câu"),
-                      SizedBox(height: 4),
-                      Text(
-                        "200",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: const [
-                      Text("Đã trả lời"),
-                      SizedBox(height: 4),
-                      Text("0", style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  Column(
-                    children: const [
-                      Text("Chưa trả lời"),
-                      SizedBox(height: 4),
-                      Text(
-                        "200",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Phần 1: câu 1 đến 6
-              const Text(
-                "Phần 1",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(6, (index) {
-                  int num = index + 1;
-                  return _buildQuestionButton(context, num);
-                }),
-              ),
-              const SizedBox(height: 16),
-              // Phần 2: câu 7 đến 31
-              const Text(
-                "Phần 2",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(31 - 7 + 1, (index) {
-                  int num = index + 7;
-                  return _buildQuestionButton(context, num);
-                }),
-              ),
-              const SizedBox(height: 16),
-              // Phần 3: câu 32 đến 38
-              const Text(
-                "Phần 3",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: List.generate(38 - 32 + 1, (index) {
-                  int num = index + 32;
-                  return _buildQuestionButton(context, num);
-                }),
-              ),
-              const SizedBox(height: 24),
-              // Nút "Nộp bài kiểm tra" ở dưới cùng của BottomSheet
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Xử lý logic nộp bài kiểm tra tại đây
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: const Text(
-                    "Nộp bài kiểm tra",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//TODO xử lí làm sao để cho bottomSheet hoạt động hiệu quả hơn, code them cac man hinh tuy theo part, xay dung viewmodel
