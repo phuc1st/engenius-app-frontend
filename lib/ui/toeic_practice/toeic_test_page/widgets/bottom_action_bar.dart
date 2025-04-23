@@ -24,42 +24,31 @@ class BottomActionBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           // Back Button
-          SizedBox(
-            height: 48,
-            width: 48,
-            child: _roundedRectangleButton(
-              icon: Icons.arrow_back_sharp,
-              onPressed: onBack,
-            ),
+          _roundedRectangleButton(
+            icon: Icons.arrow_back_sharp,
+            onPressed: onBack,
           ),
           // Overview & Submit Button
-          SizedBox(
-            height: 48,
-            child: ElevatedButton.icon(
-              onPressed: onOverviewSubmit,
-              icon: const Icon(Icons.grid_view_outlined, size: 20),
-              label: const Text(
-                'Tổng quan & Nộp bài',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ElevatedButton.icon(
+            onPressed: onOverviewSubmit,
+            icon: const Icon(Icons.grid_view_outlined, size: 20),
+            label: const Text(
+              'Tổng quan & Nộp bài',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              backgroundColor: const Color(0xFF5A7FFF),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                backgroundColor: const Color(0xFF5A7FFF),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
+              elevation: 0,
             ),
           ),
-          SizedBox(
-            height: 48,
-            width: 48,
-            child: _roundedRectangleButton(
-              icon: Icons.arrow_forward_sharp,
-              onPressed: onNext,
-            ),
+          _roundedRectangleButton(
+            icon: Icons.arrow_forward_sharp,
+            onPressed: onNext,
           ),
         ],
       ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/audio_player.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/answer_widget.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/bottom_action_bar.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_overview_bottom_sheet.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_widget.dart';
 
 void main() {
   runApp(const TestApp());
 }
 
 class TestApp extends StatelessWidget {
-  const TestApp({Key? key}) : super(key: key);
+  const TestApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class TestApp extends StatelessWidget {
 }
 
 class TestScreen extends StatefulWidget {
-  const TestScreen({Key? key}) : super(key: key);
+  const TestScreen({super.key});
 
   @override
   State<TestScreen> createState() => _TestScreenState();
@@ -69,7 +70,7 @@ class _TestScreenState extends State<TestScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -77,8 +78,11 @@ class _TestScreenState extends State<TestScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Question 1", style: TextStyle(color: Colors.green.shade700),),
-                  const SizedBox(width: 6,),
+                  Text(
+                    "Question 1",
+                    style: TextStyle(color: Colors.green.shade700),
+                  ),
+                  const SizedBox(width: 6),
                   Expanded(
                     flex: 3,
                     child: LinearProgressIndicator(
@@ -94,7 +98,7 @@ class _TestScreenState extends State<TestScreen> {
                     height: 32,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.grey
+                      color: Colors.grey,
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -116,76 +120,21 @@ class _TestScreenState extends State<TestScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              // Phần ghi âm
-              const Text(
-                "Bản ghi âm",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              AudioPlayerWidget(
+              QuestionWidget(
                 audioUrl:
-                    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-              ),
-              const SizedBox(height: 16),
-              // Hình ảnh (placeholder)
-              Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      'https://antimatter.vn/wp-content/uploads/2022/12/anh-meme-hai-lam-avatar.jpg',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Câu hỏi trắc nghiệm "Question 1"
-              const Text(
-                "Question 1",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              OptionTile(
-                option: "A",
-                groupValue: _selectedOption,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedOption = value;
-                  });
-                },
-              ),
-              OptionTile(
-                option: "B",
-                groupValue: _selectedOption,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedOption = value;
-                  });
-                },
-              ),
-              OptionTile(
-                option: "C",
-                groupValue: _selectedOption,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedOption = value;
-                  });
-                },
-              ),
-              OptionTile(
-                option: "D",
-                groupValue: _selectedOption,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedOption = value;
-                  });
-                },
+                    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                imageUrl: "assets/images/cat.png",
               ),
               const SizedBox(height: 24),
-
-              // Nút "Tổng quan & Nộp bài"
+              AnswerWidget(
+                onChanged: (value) {
+                  setState(() {
+                    _selectedOption = value;
+                  });
+                },
+                selectedOption: _selectedOption,
+                questionNumber: 1,
+              ),
             ],
           ),
         ),
@@ -194,31 +143,4 @@ class _TestScreenState extends State<TestScreen> {
   }
 }
 
-/// Widget cho lựa chọn trắc nghiệm với RadioListTile được bao bọc trong Card
-class OptionTile extends StatelessWidget {
-  final String option;
-  final String? groupValue;
-  final ValueChanged<String?> onChanged;
-
-  const OptionTile({
-    Key? key,
-    required this.option,
-    required this.groupValue,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: RadioListTile<String>(
-        title: Text(option),
-        value: option,
-        groupValue: groupValue,
-        onChanged: onChanged,
-      ),
-    );
-  }
-}
-
-//TODO xử lí làm sao để cho bottomSheet hoạt động hiệu quả hơn, code them cac man hinh tuy theo part, xay dung viewmodel
+// TODO code them cac man hinh tuy theo part, xay dung viewmodel

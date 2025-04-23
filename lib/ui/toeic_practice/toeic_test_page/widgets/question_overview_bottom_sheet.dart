@@ -17,7 +17,7 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.75,
+      initialChildSize: 0.65,
       maxChildSize: 0.95,
       minChildSize: 0.3,
       builder: (context, scrollController) {
@@ -84,7 +84,6 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
                                 }).toList();
                       
                                 return SingleChildScrollView(
-                                  controller: scrollController,
                                   padding: const EdgeInsets.only(top: 16),
                                   child: _buildGroupedQuestions(filteredQuestions),
                                 );
