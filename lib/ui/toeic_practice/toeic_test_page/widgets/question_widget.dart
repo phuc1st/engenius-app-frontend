@@ -4,8 +4,14 @@ import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/audio_player.dar
 class QuestionWidget extends StatelessWidget {
   final String? audioUrl;
   final String? imageUrl;
+  final String? passage;
 
-  const QuestionWidget({super.key, this.audioUrl, this.imageUrl});
+  const QuestionWidget({
+    super.key,
+    this.audioUrl,
+    this.imageUrl,
+    this.passage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,22 +30,30 @@ class QuestionWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Bản ghi âm",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          if (audioUrl != null) ...[
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Bản ghi âm",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          AudioPlayerWidget(audioUrl: audioUrl!),
-          const SizedBox(height: 16),
+            const SizedBox(height: 10),
+            AudioPlayerWidget(audioUrl: audioUrl!),
+            const SizedBox(height: 16),
+          ],
           // Hình ảnh (placeholder)
-          ClipRRect(
-            clipBehavior: Clip.hardEdge,
-            borderRadius: BorderRadius.circular(20), // Bo góc tại đây
-            child: Image.asset(imageUrl!, fit: BoxFit.contain, height: 150),
-          ),
+          if (imageUrl != null)
+            ClipRRect(
+              clipBehavior: Clip.hardEdge,
+              borderRadius: BorderRadius.circular(20), // Bo góc tại đây
+              child: Image.asset(imageUrl!, fit: BoxFit.contain, height: 150),
+            ),
+          if (passage != null)
+            Text(
+              passage ?? "",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
         ],
       ),
     );

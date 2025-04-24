@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       ),
       // initialRoute: Routes.grammar,
       // onGenerateRoute: generateRoute
-      home: TestScreen()
+      home: ToeicTestScreen(testId: "testId")
     );
   }
 }
