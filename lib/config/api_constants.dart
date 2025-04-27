@@ -5,4 +5,5 @@ class ApiConstants {
   static const String registration = '$baseUrl/identity/users/registration';
   static const String getTopics = '$baseUrl/';
   static const String getFlashCards = '$baseUrl/';
+  static const String getToeicTest = '$baseUrl/learn/toeic-tests';
 }

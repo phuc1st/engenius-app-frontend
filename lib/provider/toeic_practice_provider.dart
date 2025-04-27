@@ -20,11 +20,11 @@ final toeicPracticeRepositoryProvider = Provider<ToeicPracticeRepository>((
 
 //Provider for ToeicTestPageViewModel
 final toeicTestScreenViewModelProvider = StateNotifierProvider.autoDispose
-    .family<ToeicTestPageViewModel, ToeicTestPageState, String>((ref, testId) {
-      // final repo = ref.watch(toeicPracticeRepositoryProvider);
-      final mockRepo = MockToeicPracticeRepository();
+    .family<ToeicTestPageViewModel, ToeicTestPageState, int>((ref, testId) {
+      final repo = ref.watch(toeicPracticeRepositoryProvider);
+      // final mockRepo = MockToeicPracticeRepository();
       return ToeicTestPageViewModel(
-        toeicPracticeRepository: mockRepo,
+        toeicPracticeRepository: repo,
         testId: testId,
       );
     });

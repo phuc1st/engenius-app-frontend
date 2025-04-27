@@ -1,4 +1,6 @@
-import 'package:toeic/data/services/api/model/toeic_practice//toeic_test.dart';
+
+
+import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
 
 class ToeicTestPageState {
   final ToeicTest toeicTest;
@@ -23,7 +25,7 @@ class ToeicTestPageState {
   factory ToeicTestPageState.initial() {
     return ToeicTestPageState(
       toeicTest: ToeicTest(
-        id: '',
+        id: 0,
         name: '',
         createdAt: DateTime.now(),
         parts: [],

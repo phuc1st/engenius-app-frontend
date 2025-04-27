@@ -3,15 +3,15 @@ import 'package:toeic/data/services/api/api_clients/base_api_client.dart';
 import 'package:toeic/data/services/api/model/api_response.dart';
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/flash_card_response.dart';
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
-import 'package:toeic/data/services/api/model/toeic_practice//toeic_test.dart';
+import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
 import 'package:toeic/utils/json_helpers.dart';
 
 class ToeicPracticeApiClient extends BaseApiClient {
   ToeicPracticeApiClient({super.dio});
 
-  Future<ApiResponse<ToeicTest>> getToeicTest() async {
+  Future<ApiResponse<ToeicTest>> getToeicTest(int toeicTestId) async {
     return makeRequest(
-      url: ApiConstants.getTopics,
+      url: '${ApiConstants.getToeicTest}/$toeicTestId',
       method: 'GET',
       fromJson: (json) => ToeicTest.fromJson(json)
     );

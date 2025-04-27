@@ -7,7 +7,7 @@ import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_overvie
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_widget.dart';
 
 class ToeicTestScreen extends ConsumerStatefulWidget {
-  String testId;
+  int testId;
 
   ToeicTestScreen({super.key, required this.testId});
 

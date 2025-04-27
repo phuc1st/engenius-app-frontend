@@ -1,12 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/repositories/toeic_practice/toeic_practice_repository.dart';
+import 'package:toeic/data/services/api/model/toeic_practice/question_block.dart';
 import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/viewmodel/toeic_test_page_state.dart';
 import 'package:toeic/utils/result.dart';
 
 class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
   final ToeicPracticeRepository toeicPracticeRepository;
-  final String testId;
+  final int testId;
 
   ToeicTestPageViewModel({
     required this.toeicPracticeRepository,

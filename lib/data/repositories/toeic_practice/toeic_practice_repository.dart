@@ -1,7 +1,7 @@
 import 'package:toeic/data/repositories/base_repository.dart';
 import 'package:toeic/data/services/api/api_clients/toeic_practice_api_client.dart';
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/flash_card_response.dart';
-import 'package:toeic/data/services/api/model/toeic_practice//toeic_test.dart';
+import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
 import 'package:toeic/utils/result.dart';
 
 class ToeicPracticeRepository extends BaseRepository {
@@ -9,8 +9,8 @@ class ToeicPracticeRepository extends BaseRepository {
 
   ToeicPracticeRepository({required this.toeicTestApiClient});
 
-  Future<Result<ToeicTest>> getToeicTest(String toeicTestId) async {
-    final apiResponse = await toeicTestApiClient.getToeicTest();
+  Future<Result<ToeicTest>> getToeicTest(int toeicTestId) async {
+    final apiResponse = await toeicTestApiClient.getToeicTest(toeicTestId);
     return handleApiResponse(apiResponse);
   }
 
