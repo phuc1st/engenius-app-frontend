@@ -6,10 +6,11 @@ class AnswerWidget extends StatelessWidget {
   final List<Question> questions;
 
   /// Map số câu hỏi -> đáp án đã chọn
-  final Map<int, String?> selectedAnswers;
+  final Map<int, int?> selectedAnswers;
 
   /// Callback khi user chọn đáp án, trả về số câu và đáp án
-  final void Function(int questionNumber, String option) onOptionSelected;
+  final void Function(int questionId, int questionNumber, int option)
+  onOptionSelected;
 
   const AnswerWidget({
     super.key,
@@ -26,11 +27,7 @@ class AnswerWidget extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: const [
-          BoxShadow(
-            spreadRadius: 2,
-            color: Colors.black26,
-            blurRadius: 1,
-          ),
+          BoxShadow(spreadRadius: 2, color: Colors.black26, blurRadius: 1),
         ],
       ),
       child: Column(
@@ -49,7 +46,7 @@ class AnswerWidget extends StatelessWidget {
   }
 
   Widget _buildQuestionSection(Question q) {
-    final selected = selectedAnswers[q.number];
+    final selected = selectedAnswers[q.id];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -57,44 +54,54 @@ class AnswerWidget extends StatelessWidget {
           'Question ${q.number}',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        if (q.text.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Text(q.text),
-        ],
+        if (q.text.isNotEmpty) ...[const SizedBox(height: 4), Text(q.text)],
         const SizedBox(height: 8),
         // Các lựa chọn
-        ...q.options.map(
-              (opt) => OptionTile(
-            option: opt,
+        /* ...q.options.map(
+          (opt) => OptionTile(
+            title: opt,
+            value: 1,
             groupValue: selected,
             onOptionSelected: (val) {
               if (val != null) onOptionSelected(q.number, val);
             },
           ),
-        ),
+        ),*/
+        for (int i = 0; i < q.options.length; i++) ...[
+          OptionTile(
+            title: q.options[i],
+            value: i,
+            groupValue: selected,
+            onOptionSelected: (val) {
+              if (val != null) onOptionSelected(q.id, q.number, val);
+            },
+          ),
+        ],
       ],
     );
   }
 }
 
 class OptionTile extends StatelessWidget {
-  final String option;
-  final String? groupValue;
-  final ValueChanged<String?> onOptionSelected;
+  final String title;
+  final int value;
+  final int? groupValue;
+  final ValueChanged<int?> onOptionSelected;
 
   const OptionTile({
     super.key,
-    required this.option,
+    required this.title,
+    required this.value,
     required this.groupValue,
     required this.onOptionSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return RadioListTile<String>(
+    return RadioListTile<int>(
       contentPadding: EdgeInsets.zero,
-      title: Text(option),
-      value: option,
+      title: Text(title),
+      value: value,
       groupValue: groupValue,
       onChanged: onOptionSelected,
       visualDensity: const VisualDensity(vertical: -4),

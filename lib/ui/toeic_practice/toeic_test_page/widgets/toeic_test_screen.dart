@@ -31,7 +31,12 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
   }
 
   // Hàm mở BottomSheet
-  void _showOverviewBottomSheet(int totalQuestions, Set<int> answered, Map<int,int> questionToBlock) {
+  void _showOverviewBottomSheet(
+    int totalQuestions,
+    Set<int> answered,
+    Map<int, int> questionToBlock,
+    VoidCallback submitTest
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -42,13 +47,11 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
           answeredQuestions: answered,
           onQuestionTap: (q) {
             final blockIndex = questionToBlock[q];
-            if(blockIndex != null){
+            if (blockIndex != null) {
               _pageController.jumpToPage(blockIndex);
             }
           },
-          onSubmit: () {
-            print('Nộp bài kiểm tra');
-          },
+          onSubmit: submitTest,
         );
       },
     );
@@ -73,8 +76,11 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
 
     final blocks = state.toeicTest.parts.expand((p) => p.blocks).toList();
     final totalPage = blocks.length;
-    final answeredSet = state.answers.keys.toSet();
-    final totalQuestion = blocks.fold(0, (sum, block) => sum + block.questions.length);
+    final answeredSet = state.answeredIndex;
+    final totalQuestion = blocks.fold(
+      0,
+      (sum, block) => sum + block.questions.length,
+    );
 
     final questionToBlock = <int, int>{};
     for (var i = 0; i < blocks.length; i++) {
@@ -100,7 +106,12 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
           }
         },
         onOverviewSubmit:
-            () => _showOverviewBottomSheet(totalQuestion, answeredSet, questionToBlock),
+            () => _showOverviewBottomSheet(
+              totalQuestion,
+              answeredSet,
+              questionToBlock,
+              vm.submitTest
+            ),
         onNext: () {
           if (vm.state.currentIndex < totalPage - 1) {
             vm.goToNextBlock();
@@ -151,7 +162,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                       Expanded(
                         flex: 3,
                         child: LinearProgressIndicator(
-                          value: 0.5,
+                          value: totalQuestion == 0 ? 1 : answeredSet.length/totalQuestion,
                           backgroundColor: Colors.grey[300],
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             Colors.blue,
@@ -196,10 +207,10 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                   const SizedBox(height: 24),
                   AnswerWidget(
                     questions: questions,
-                    onOptionSelected: (q, val) => vm.submitAnswer(q, val),
-                    selectedAnswers: state.answers.map(
-                      (q, ans) => MapEntry(q, ans),
-                    ),
+                    onOptionSelected:
+                        (questionId, questionNumber, val) =>
+                            vm.submitAnswer(questionId, questionNumber, val),
+                    selectedAnswers: state.answers,
                   ),
                 ],
               ),

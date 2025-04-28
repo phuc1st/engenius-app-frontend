@@ -30,12 +30,20 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
   }
 
   /// Ghi nhận đáp án của câu hỏi [questionNumber].
-  void submitAnswer(int questionNumber, String answer) {
-    final newAnswers = Map<int, String>.from(state.answers)
-      ..[questionNumber] = answer;
-    state = state.copyWith(answers: newAnswers);
+  void submitAnswer(int questionId, int questionNumber, int answerIndex) {
+    final newAnswers = Map<int, int>.from(state.answers)
+      ..[questionId] = answerIndex;
+    final newAnsweredIndex = Set<int>.from(state.answeredIndex)
+      ..add(questionNumber);
+    state = state.copyWith(
+      answers: newAnswers,
+      answeredNumber: newAnsweredIndex,
+    );
   }
-
+  void submitTest(){
+    state.answers.forEach((id, index)=> print("$id: $index\n"));
+    state.answeredIndex.forEach((index)=>print(index));
+  }
   /// Chuyển sang QuestionBlock tiếp theo (nếu có).
   void goToNextBlock() {
     final nextIndex = state.currentIndex + 1;

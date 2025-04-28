@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
@@ -22,21 +22,27 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     super.initState();
 
     _audioPlayer.onDurationChanged.listen((d) {
-      setState(() {
-        _duration = d;
-      });
+      if (mounted) {
+        setState(() {
+          _duration = d;
+        });
+      }
     });
 
     _audioPlayer.onPositionChanged.listen((p) {
-      setState(() {
-        _position = p;
-      });
+      if (mounted) {
+        setState(() {
+          _position = p;
+        });
+      }
     });
 
     _audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        _isPlaying = state == PlayerState.playing;
-      });
+      if (mounted) {
+        setState(() {
+          _isPlaying = state == PlayerState.playing;
+        });
+      }
     });
   }
 
@@ -58,11 +64,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
         color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(6),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 0.5,
-            spreadRadius: 1
-          )
+          BoxShadow(color: Colors.black26, blurRadius: 0.5, spreadRadius: 1),
         ],
       ),
       child: Row(
@@ -81,13 +83,13 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
               }
             },
           ),
-          Text(
-            _formatTime(_position),
-            style: const TextStyle(fontSize: 14),
-          ),
+          Text(_formatTime(_position), style: const TextStyle(fontSize: 14)),
           Expanded(
             child: Slider(
-              value: _position.inSeconds.toDouble().clamp(0, _duration.inSeconds.toDouble()),
+              value: _position.inSeconds.toDouble().clamp(
+                0,
+                _duration.inSeconds.toDouble(),
+              ),
               max: _duration.inSeconds.toDouble(),
               activeColor: Colors.blueAccent,
               inactiveColor: Colors.blueAccent.withAlpha(75),
@@ -98,10 +100,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
               },
             ),
           ),
-          Text(
-            _formatTime(_duration),
-            style: const TextStyle(fontSize: 14),
-          ),
+          Text(_formatTime(_duration), style: const TextStyle(fontSize: 14)),
         ],
       ),
     );
