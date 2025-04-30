@@ -8,7 +8,7 @@ class ApiResponse<T> {
   // Hàm chuyển đổi từ JSON sang ApiResponse
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,
-    T Function(Map<String, dynamic> json) fromJsonT,
+    T Function(dynamic json) fromJsonT,
   ) {
     return ApiResponse<T>(
       code: json['code'],

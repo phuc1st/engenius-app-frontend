@@ -23,7 +23,7 @@ abstract class BaseApiClient {
     required String url,
     required String method,
     Map<String, dynamic>? body,
-    required T Function(Map<String, dynamic>) fromJson,
+    required T Function(dynamic json) fromJson,
   }) async {
     try {
       final response = await dio.request(
