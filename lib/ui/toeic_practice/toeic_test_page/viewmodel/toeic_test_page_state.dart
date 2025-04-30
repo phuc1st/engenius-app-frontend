@@ -1,4 +1,6 @@
-import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
+
+
+import 'package:toeic/data/services/api/model/toeic_test_response/toeic_test.dart';
 
 class ToeicTestPageState {
   final ToeicTest toeicTest;
@@ -11,12 +13,12 @@ class ToeicTestPageState {
   ToeicTestPageState({
     required this.toeicTest,
     Map<int, int>? answers,
-    Set<int>? answeredNumber,
+    Set<int>? answeredIndex,
     this.currentIndex = 0,
     this.isLoading = false,
     this.errorMessage,
   })  : answers = answers ?? const {},
-        answeredIndex = answeredNumber ?? <int>{};
+        answeredIndex = answeredIndex ?? <int>{};
 
   /// Constructor để khởi tạo state ban đầu khi chưa load test
   factory ToeicTestPageState.initial() {
@@ -28,7 +30,7 @@ class ToeicTestPageState {
         parts: [],
       ),
       answers: {},
-      answeredNumber: <int>{},
+      answeredIndex: <int>{},
       currentIndex: 0,
       isLoading: true,
       errorMessage: null,
@@ -38,7 +40,7 @@ class ToeicTestPageState {
   ToeicTestPageState copyWith({
     ToeicTest? toeicTest,
     Map<int, int>? answers,
-    Set<int>? answeredNumber,
+    Set<int>? answeredIndex,
     int? currentIndex,
     bool? isLoading,
     String? errorMessage,
@@ -46,7 +48,7 @@ class ToeicTestPageState {
     return ToeicTestPageState(
       toeicTest: toeicTest ?? this.toeicTest,
       answers: answers ?? this.answers,
-      answeredNumber: answeredNumber ?? this.answeredIndex,
+      answeredIndex: answeredIndex ?? this.answeredIndex,
       currentIndex: currentIndex ?? this.currentIndex,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,

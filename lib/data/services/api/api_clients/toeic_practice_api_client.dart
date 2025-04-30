@@ -1,9 +1,10 @@
 import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/data/services/api/api_clients/base_api_client.dart';
 import 'package:toeic/data/services/api/model/api_response.dart';
-import 'package:toeic/data/services/api/model/learn_vocabulary_response/flash_card_response.dart';
-import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
-import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
+import 'package:toeic/data/services/api/model/toeic_practice_request/submit_test_request.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/submit_test_response.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/test_attempt_answer_response.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/toeic_test.dart';
 import 'package:toeic/utils/json_helpers.dart';
 
 class ToeicPracticeApiClient extends BaseApiClient {
@@ -13,24 +14,31 @@ class ToeicPracticeApiClient extends BaseApiClient {
     return makeRequest(
       url: '${ApiConstants.getToeicTest}/$toeicTestId',
       method: 'GET',
-      fromJson: (json) => ToeicTest.fromJson(json)
+      fromJson: (json) => ToeicTest.fromJson(json),
     );
   }
 
-  Future<ApiResponse<List<TopicResponse>>> getTopics() async {
+  Future<ApiResponse<SubmitTestResponse>> submitTest(
+    SubmitTestRequest request,
+  ) async {
     return makeRequest(
-      url: ApiConstants.getTopics,
-      method: 'GET',
-      fromJson: (json) => listFromJson(json, TopicResponse.fromJson),
+      url: ApiConstants.submitTest,
+      method: 'POST',
+      body: request.toJson(),
+      fromJson: (json) => SubmitTestResponse.fromJson(json),
     );
   }
 
-  Future<ApiResponse<List<FlashCardResponse>>> getFlashCards(topicId) async {
+  Future<ApiResponse<List<TestAttemptAnswerResponse>>> getTestAttempt(
+    String userId,
+    int testId,
+  ) async {
     return makeRequest(
-      url: '${ApiConstants.getFlashCards}/$topicId',
+      url: 'http://localhost:8222/api/v1/learn/test-attempt/user-1/1',
       method: 'GET',
-      fromJson: (json) => listFromJson(json, FlashCardResponse.fromJson),
+      fromJson: (json) => listFromJson(json, TestAttemptAnswerResponse.fromJson),
     );
   }
 }
+
 //TODO CHINH LAI

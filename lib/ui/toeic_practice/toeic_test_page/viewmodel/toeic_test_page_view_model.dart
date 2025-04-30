@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/repositories/toeic_practice/toeic_practice_repository.dart';
-import 'package:toeic/data/services/api/model/toeic_practice/question_block.dart';
-import 'package:toeic/data/services/api/model/toeic_practice/toeic_test.dart';
+import 'package:toeic/data/services/api/model/toeic_practice_request/submit_test_request.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/question_block.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/test_attempt_answer_response.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/toeic_test.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/viewmodel/toeic_test_page_state.dart';
 import 'package:toeic/utils/result.dart';
 
@@ -20,7 +22,20 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
     final result = await toeicPracticeRepository.getToeicTest(testId);
     if (result is Ok<ToeicTest>) {
-      state = state.copyWith(toeicTest: result.value, isLoading: false);
+      state = state.copyWith(toeicTest: result.value);
+
+      final testAttempt = await toeicPracticeRepository.getTestAttempts("user-1", testId);
+      if(testAttempt is Ok<List<TestAttemptAnswerResponse>>){
+        Map<int, int> answersTempt = {};
+        Set<int> answeredIndexTempt = {};
+        for (var response in testAttempt.value) {
+          answersTempt[response.questionId] = response.selectedIndex;
+          answeredIndexTempt.add(response.number);
+        }
+        state = state.copyWith(answers: answersTempt, answeredIndex: answeredIndexTempt);
+      }
+      state = state.copyWith(isLoading: false);
+
     } else if (result is Error<ToeicTest>) {
       state = state.copyWith(
         isLoading: false,
@@ -37,12 +52,20 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
       ..add(questionNumber);
     state = state.copyWith(
       answers: newAnswers,
-      answeredNumber: newAnsweredIndex,
+      answeredIndex: newAnsweredIndex,
     );
   }
   void submitTest(){
     state.answers.forEach((id, index)=> print("$id: $index\n"));
     state.answeredIndex.forEach((index)=>print(index));
+    final submitTestRequest = SubmitTestRequest(
+      testId: 1,
+      userId: "user-1",
+      answers: state.answers.entries.map((entry) {
+        return Answer(questionId: entry.key, selectedIndex: entry.value);
+      }).toList(),
+    );
+    toeicPracticeRepository.submitTest(submitTestRequest);
   }
   /// Chuyển sang QuestionBlock tiếp theo (nếu có).
   void goToNextBlock() {
@@ -67,3 +90,4 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
     return blocks[state.currentIndex];
   }
 }
+//TODO thêm màn hình trả kết quả, nếu đang làm mà thoát thì hiện thông báo vào lưu testAttempt

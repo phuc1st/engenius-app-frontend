@@ -1,4 +1,4 @@
-import 'package:toeic/data/services/api/model/toeic_practice/toeic_part.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/toeic_part.dart';
 
 class ToeicTest {
   final int id;           // Nếu có ID lưu trong DB

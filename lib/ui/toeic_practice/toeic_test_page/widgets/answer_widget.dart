@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:toeic/data/services/api/model/toeic_practice/question.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/question.dart';
 
 class AnswerWidget extends StatelessWidget {
   /// Danh sách câu hỏi trong block hiện tại

@@ -1,4 +1,4 @@
-import 'package:toeic/data/services/api/model/toeic_practice/question_block.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/question_block.dart';
 
 class ToeicPart {
   int id;

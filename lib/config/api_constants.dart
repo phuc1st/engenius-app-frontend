@@ -6,4 +6,6 @@ class ApiConstants {
   static const String getTopics = '$baseUrl/';
   static const String getFlashCards = '$baseUrl/';
   static const String getToeicTest = '$baseUrl/learn/toeic-tests';
+  static const String submitTest = '$baseUrl/learn/test-attempt/submit';
+  static const String getTestAttempt = '$baseUrl/learn/test-attempt';
 }
