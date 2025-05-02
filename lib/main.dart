@@ -9,6 +9,7 @@ import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_detail_screen.da
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.dart';
 import 'package:toeic/ui/toeic_practice/list_test/widgets/list_test_screen.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/toeic_test_screen.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_result/widgets/toeic_result_screen.dart';
 import 'package:toeic/utils/temp.dart';
 import 'package:toeic/utils/test.dart';
 
@@ -26,6 +27,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          shadowColor: Colors.black,
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see
@@ -43,9 +55,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      // initialRoute: Routes.grammar,
-      // onGenerateRoute: generateRoute
-      home: ToeicTestScreen(testId: 1)
+      initialRoute: Routes.toeicTest,
+      onGenerateRoute: generateRoute
+      // home: ToeicTestScreen(testId: 1)
     );
   }
 }

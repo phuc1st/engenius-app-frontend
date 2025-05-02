@@ -8,4 +8,5 @@ class ApiConstants {
   static const String getToeicTest = '$baseUrl/learn/toeic-tests';
   static const String submitTest = '$baseUrl/learn/test-attempt/submit';
   static const String getTestAttempt = '$baseUrl/learn/test-attempt';
+  static const String saveTest = '$baseUrl/learn/test-attempt/save';
 }

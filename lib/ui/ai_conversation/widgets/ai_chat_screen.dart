@@ -65,7 +65,10 @@ class _ChatScreenState extends ConsumerState<AIChatScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+        ),
         title: const Text(
           'AI Conversation',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),

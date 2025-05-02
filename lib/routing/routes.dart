@@ -7,4 +7,7 @@ final class Routes{
   static const flashCard = 'flashCard';
   static const grammar = '/$grammarDetail';
   static const grammarDetail = 'grammarDetail';
+  static const toeicPractice = '/$toeicTest';
+  static const toeicTest = '/$toeicTestResult';
+  static const toeicTestResult = 'toeicTestResult';
 }

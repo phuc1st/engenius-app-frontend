@@ -25,6 +25,11 @@ class ToeicPracticeRepository extends BaseRepository {
     final apiResponse = await toeicTestApiClient.getTestAttempt(userId, testId);
     return handleApiResponse(apiResponse);
   }
+
+  Future<Result<SubmitTestResponse>> saveTest(SubmitTestRequest request) async {
+    final apiResponse = await toeicTestApiClient.saveTest(request);
+    return handleApiResponse(apiResponse);
+  }
 }
 
 //TODO CHINH LAI

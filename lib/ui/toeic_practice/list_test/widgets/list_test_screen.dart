@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toeic/routing/routes.dart';
 
 class FullTestScreen extends StatelessWidget {
   const FullTestScreen({super.key});
@@ -13,7 +14,7 @@ class FullTestScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
+          onPressed: () => Navigator.pushNamed(context, Routes.home),
         ),
         actions: [
           IconButton(
@@ -37,7 +38,7 @@ class FullTestScreen extends StatelessWidget {
             testNumber: testNumber,
             isTakingTest: isTakingTest,
             isNew: isNew,
-            onTap: onTestItemTap
+            onTap: onTestItemTap,
           );
         },
       ),
@@ -173,7 +174,7 @@ class FullTestScreen extends StatelessWidget {
     );
   }
 
-  void onTestItemTap(int testNumber){
+  void onTestItemTap(int testNumber) {
     print("Tap on: $testNumber");
   }
 }

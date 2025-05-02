@@ -39,6 +39,17 @@ class ToeicPracticeApiClient extends BaseApiClient {
       fromJson: (json) => listFromJson(json, TestAttemptAnswerResponse.fromJson),
     );
   }
+
+  Future<ApiResponse<SubmitTestResponse>> saveTest(
+      SubmitTestRequest request,
+      ) async {
+    return makeRequest(
+      url: ApiConstants.saveTest,
+      method: 'POST',
+      body: request.toJson(),
+      fromJson: (json) => SubmitTestResponse.fromJson(json),
+    );
+  }
 }
 
 //TODO CHINH LAI

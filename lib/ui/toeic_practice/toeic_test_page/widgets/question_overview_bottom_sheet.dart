@@ -4,7 +4,7 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
   final int totalQuestions;
   final Set<int> answeredQuestions;
   final void Function(int) onQuestionTap;
-  final VoidCallback onSubmit;
+  final Future<void> Function() onSubmit;
 
   const QuestionOverviewBottomSheet({
     super.key,
@@ -104,7 +104,10 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
               left: 16,
               right: 16,
               child: ElevatedButton(
-                onPressed: onSubmit,
+                onPressed: () async {
+                  print("Noopj bai");
+                  await onSubmit(); // đảm bảo submit xong rồi mới tiếp
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.blue,
