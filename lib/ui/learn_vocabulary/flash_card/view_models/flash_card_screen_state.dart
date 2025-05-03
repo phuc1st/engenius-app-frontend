@@ -4,7 +4,7 @@ class FlashCardScreenState {
   final List<FlashCardResponse> flashCards;
   final int leftCount;
   final int rightCount;
-  final Set<String> alreadySwipedLeft;
+  final Set<int> alreadySwipedLeft;
   final bool isLoading;
   final String? error;
 
@@ -21,7 +21,7 @@ class FlashCardScreenState {
     List<FlashCardResponse>? flashCards,
     int? leftCount,
     int? rightCount,
-    Set<String>? alreadySwipedLeft,
+    Set<int>? alreadySwipedLeft,
     bool? isLoading,
     String? error,
   }) {

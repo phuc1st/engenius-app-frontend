@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/user_vocabulary_topic_progress_response.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/vocabulary_topic_response.dart';
 
 class VocabularyTopicItem extends StatelessWidget {
-  final TopicResponse topic;
+  final UserVocabularyTopicProgressResponse topic;
   final VoidCallback onTap;
 
   const VocabularyTopicItem({
@@ -42,7 +43,7 @@ class VocabularyTopicItem extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 6),
-                          if (topic.isNew)
+                          if (topic.newTopic)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 6,
@@ -67,7 +68,7 @@ class VocabularyTopicItem extends StatelessWidget {
                       Text(
                         "Chính xác: ${topic.accuracy}%",
                         style: TextStyle(
-                          color: topic.accuracy > 0 ? Colors.green : Colors.grey,
+                          color: Colors.grey,
                         ),
                       ),
                     ],

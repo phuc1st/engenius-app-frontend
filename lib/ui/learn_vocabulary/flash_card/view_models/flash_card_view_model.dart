@@ -6,15 +6,16 @@ import 'package:toeic/utils/result.dart';
 
 class FlashCardViewModel extends StateNotifier<FlashCardScreenState> {
   final LearnVocabularyRepository _learnVocabularyRepository;
-
+  late int progressId;
   FlashCardViewModel({
     required LearnVocabularyRepository learnVocabularyRepository,
   }) : _learnVocabularyRepository = learnVocabularyRepository,
        super(const FlashCardScreenState(flashCards: []));
 
-  Future<void> getFlashCards(String topicId) async {
+  Future<void> getFlashCards(int progressId) async {
+    this.progressId = progressId;
     state = state.copyWith(isLoading: true, error: null);
-    final result = await _learnVocabularyRepository.getFlashCards(topicId);
+    final result = await _learnVocabularyRepository.getFlashCards(progressId);
 
     if (result is Ok<List<FlashCardResponse>>) {
       state = state.copyWith(
@@ -26,14 +27,15 @@ class FlashCardViewModel extends StateNotifier<FlashCardScreenState> {
     }
   }
 
-  Future<void> updateFlashcardMemorized({
-    required String flashcardId,
+  void updateFlashcardMemorized({
+    required int flashcardId,
     required bool memorized,
-  }) async {
-    /* final result = await _learnVocabularyRepository.updateFlashcardMemorized(
+  }) {
+    _learnVocabularyRepository.updateFlashcardMemorized(
+      progressId,
       flashcardId,
       memorized,
-    );*/
+    );
   }
 
   void swipeRight() {
@@ -68,7 +70,7 @@ class FlashCardViewModel extends StateNotifier<FlashCardScreenState> {
           ..add(card);
 
     final alreadySwiped = state.alreadySwipedLeft.contains(card.id);
-    final newSwipedSet = Set<String>.from(state.alreadySwipedLeft)
+    final newSwipedSet = Set<int>.from(state.alreadySwipedLeft)
       ..add(card.id);
 
     state = state.copyWith(
@@ -85,3 +87,4 @@ class FlashCardViewModel extends StateNotifier<FlashCardScreenState> {
     }
   }
 }
+//TODO CHỈNH LẠI PROGRESSID VÀ XỬ LÝ KHI FLASHCARD NULL, VÀ NAVIGATE

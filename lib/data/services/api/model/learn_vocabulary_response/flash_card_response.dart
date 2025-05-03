@@ -1,5 +1,5 @@
 class FlashCardResponse {
-  final String id;
+  final int id;
   final String image;
   final String word;
   final String phonetic;
@@ -20,7 +20,7 @@ class FlashCardResponse {
   factory FlashCardResponse.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
-        'id': String id,
+        'id': int id,
         'image': String image,
         'word': String word,
         'phonetic': String phonetic,

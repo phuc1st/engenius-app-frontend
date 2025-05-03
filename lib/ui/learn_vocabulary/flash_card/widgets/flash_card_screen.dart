@@ -7,9 +7,9 @@ import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flashcard_counter.d
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flashcard_progress.dart';
 
 class FlashcardScreen2 extends ConsumerStatefulWidget {
-  final String topicId;
+  final int progressId;
 
-  const FlashcardScreen2({super.key, required this.topicId});
+  const FlashcardScreen2({super.key, required this.progressId});
 
   @override
   ConsumerState<FlashcardScreen2> createState() => _FlashcardScreenState();
@@ -27,7 +27,7 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen2> {
     Future.microtask(() {
       ref
           .read(flashCardViewModelProvider.notifier)
-          .getFlashCards(widget.topicId);
+          .getFlashCards(widget.progressId);
     });
   }
 

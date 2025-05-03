@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/user_vocabulary_topic_progress_response.dart';
 import 'package:toeic/data/services/api/model/toeic_test_response/submit_test_response.dart';
 import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/auth/login/widgets/login_screen.dart';
@@ -28,12 +29,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.vocabulary:
       return MaterialPageRoute(builder: (_) => VocabularyScreen());
     case Routes.topicDetail:
-      final topic = settings.arguments as TopicResponse;
+      final topic = settings.arguments as UserVocabularyTopicProgressResponse;
       return MaterialPageRoute(builder: (_) => TopicDetailScreen(topic: topic));
     case Routes.flashCard:
-      final topicId = settings.arguments as String;
+      final progressId = settings.arguments as int;
       return MaterialPageRoute(
-        builder: (_) => FlashcardScreen2(topicId: topicId),
+        builder: (_) => FlashcardScreen2(progressId: progressId),
       );
     case Routes.grammar:
       return MaterialPageRoute(builder: (_) => GrammarListScreen());

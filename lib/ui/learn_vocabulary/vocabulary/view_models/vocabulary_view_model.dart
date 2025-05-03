@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/config/app_sesstion.dart';
 import 'package:toeic/data/repositories/learn_vocabulary/learn_vocabulary_repository.dart';
-import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
-import 'package:toeic/data/services/api/model/login_request/login_request.dart';
-import 'package:toeic/data/services/api/model/login_response/login_response.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/user_vocabulary_topic_progress_response.dart';
+import 'package:toeic/data/services/api/model/learn_vocabulary_response/vocabulary_topic_response.dart';
 import 'package:toeic/utils/result.dart';
 
-class VocabularyViewModel extends StateNotifier<AsyncValue<List<TopicResponse>>> {
+class VocabularyViewModel extends StateNotifier<AsyncValue<List<UserVocabularyTopicProgressResponse>>> {
   final LearnVocabularyRepository _learnVocabularyRepository;
 
   VocabularyViewModel({required LearnVocabularyRepository learnVocabularyRepository})
@@ -14,11 +14,11 @@ class VocabularyViewModel extends StateNotifier<AsyncValue<List<TopicResponse>>>
 
   Future<void> getTopics() async {
     state = const AsyncValue.loading();
-    final result = await _learnVocabularyRepository.getTopics();
+    final result = await _learnVocabularyRepository.getTopics(AppSession.userId);
 
-    if (result is Ok<List<TopicResponse>>) {
+    if (result is Ok<List<UserVocabularyTopicProgressResponse>>) {
       state = AsyncValue.data(result.value);
-    } else if (result is Error<List<TopicResponse>>) {
+    } else if (result is Error<List<UserVocabularyTopicProgressResponse>>) {
       state = AsyncValue.error(result.error.toString(), StackTrace.current);
     }
   }
