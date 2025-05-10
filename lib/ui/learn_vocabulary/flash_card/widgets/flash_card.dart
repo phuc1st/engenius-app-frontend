@@ -64,7 +64,7 @@ class FlashcardCard extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 40),
-              Image.asset(card.image, height: 200),
+              Image.network("https://th.bing.com/th/id/OIP.6vjeUhmJD_30DKTKzXlV6QHaE7?w=261&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7", height: 200),
               const SizedBox(height: 16),
               Text(card.word,
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),

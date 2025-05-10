@@ -9,9 +9,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final user = authProvider.currentUser;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hồ sơ cá nhân'),
@@ -34,12 +31,8 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: user?.avatarUrl != null
-                        ? NetworkImage(user!.avatarUrl!)
-                        : null,
-                    child: user?.avatarUrl == null
-                        ? const Icon(Icons.person, size: 50)
-                        : null,
+                    backgroundImage: const NetworkImage('https://i.pravatar.cc/1'),
+                    child: null,
                   ),
                   Positioned(
                     bottom: 0,
@@ -67,17 +60,22 @@ class ProfileScreen extends StatelessWidget {
                 _buildInfoItem(
                   icon: Icons.person,
                   label: 'Họ và tên',
-                  value: user?.fullName ?? 'Chưa cập nhật',
+                  value: 'Nguyễn Văn A',
                 ),
                 _buildInfoItem(
                   icon: Icons.email,
                   label: 'Email',
-                  value: user?.email ?? 'Chưa cập nhật',
+                  value: 'nguyenvana@gmail.com',
                 ),
                 _buildInfoItem(
                   icon: Icons.phone,
                   label: 'Số điện thoại',
-                  value: user?.phone ?? 'Chưa cập nhật',
+                  value: '0123456789',
+                ),
+                _buildInfoItem(
+                  icon: Icons.location_on,
+                  label: 'Địa chỉ',
+                  value: 'Hà Nội, Việt Nam',
                 ),
               ],
             ),
@@ -88,17 +86,46 @@ class ProfileScreen extends StatelessWidget {
                 _buildInfoItem(
                   icon: Icons.school,
                   label: 'Trình độ',
-                  value: user?.level ?? 'Chưa cập nhật',
+                  value: 'Intermediate',
                 ),
                 _buildInfoItem(
                   icon: Icons.emoji_events,
                   label: 'Điểm kinh nghiệm',
-                  value: '${user?.experiencePoints ?? 0} XP',
+                  value: '2,500 XP',
                 ),
                 _buildInfoItem(
                   icon: Icons.groups,
                   label: 'Nhóm học',
-                  value: '${user?.studyGroups?.length ?? 0} nhóm',
+                  value: '3 nhóm',
+                ),
+                _buildInfoItem(
+                  icon: Icons.timer,
+                  label: 'Thời gian học',
+                  value: '120 giờ',
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildInfoSection(
+              title: 'Thành tích',
+              children: [
+                _buildAchievementItem(
+                  icon: Icons.star,
+                  title: 'Học viên xuất sắc',
+                  description: 'Đạt được trong tháng 3/2024',
+                  color: Colors.amber,
+                ),
+                _buildAchievementItem(
+                  icon: Icons.emoji_events,
+                  title: 'Chứng chỉ TOEIC 750+',
+                  description: 'Đạt được trong tháng 2/2024',
+                  color: Colors.blue,
+                ),
+                _buildAchievementItem(
+                  icon: Icons.local_fire_department,
+                  title: 'Học viên chăm chỉ',
+                  description: 'Đạt được trong tháng 1/2024',
+                  color: Colors.orange,
                 ),
               ],
             ),
@@ -109,8 +136,18 @@ class ProfileScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-              child: const Text('Xem thành tích'),
+              child: const Text(
+                'Xem thành tích',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -176,6 +213,50 @@ class ProfileScreen extends StatelessWidget {
                 Text(
                   value,
                   style: AppTextStyles.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAchievementItem({
+    required IconData icon,
+    required String title,
+    required String description,
+    required Color color,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.grey[600],
+                  ),
                 ),
               ],
             ),
