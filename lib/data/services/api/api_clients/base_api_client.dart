@@ -24,12 +24,14 @@ abstract class BaseApiClient {
     required String method,
     Map<String, dynamic>? body,
     required T Function(dynamic json) fromJson,
+    Map<String, dynamic>? queryParameters
   }) async {
     try {
       final response = await dio.request(
         url,
         data: body,
         options: Options(method: method),
+        queryParameters: queryParameters
       );
 
       if (response.statusCode != null &&

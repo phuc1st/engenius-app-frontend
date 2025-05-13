@@ -23,7 +23,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.home:
       return MaterialPageRoute(builder: (_) => HomeScreen());
     case Routes.login:
-      return MaterialPageRoute(builder: (_) => LoginInScreen());
+      return MaterialPageRoute(builder: (_) => LoginScreen());
     case Routes.signup:
       return MaterialPageRoute(builder: (_) => SignUpScreen());
     case Routes.vocabulary:

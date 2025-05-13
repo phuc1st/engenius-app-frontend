@@ -47,7 +47,7 @@ class QuestionWidget extends StatelessWidget {
             ClipRRect(
               clipBehavior: Clip.hardEdge,
               borderRadius: BorderRadius.circular(20), // Bo góc tại đây
-              child: Image.asset(imageUrl!, fit: BoxFit.contain, height: 150),
+              child: Image.network(imageUrl!, fit: BoxFit.contain, height: 150),
             ),
           if (passage != null)
             Text(

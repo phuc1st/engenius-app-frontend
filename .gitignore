@@ -49,3 +49,4 @@ lib/utils/temp.dart
 lib/utils/test.dart
 
 *.env
+.cursor

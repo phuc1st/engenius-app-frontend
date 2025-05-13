@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class CallState {
@@ -10,6 +12,11 @@ class CallState {
   final String? callId;
   final String? partnerId;
   final bool isLocalVideoEnabled;
+  final bool isSwapped;
+  final Offset localVideoPosition;
+  final double localVideoWidth;
+  final double localVideoHeight;
+  final bool isReconnecting;
 
   CallState({
     required this.localRenderer,
@@ -21,9 +28,16 @@ class CallState {
     this.callId,
     this.partnerId,
     this.isLocalVideoEnabled = true,
+    this.isSwapped = false,
+    this.localVideoPosition = const Offset(20, 100),
+    this.localVideoWidth = 120,
+    this.localVideoHeight = 180,
+    this.isReconnecting = false,
   });
 
   CallState copyWith({
+    RTCVideoRenderer? localRenderer,
+    RTCVideoRenderer? remoteRenderer,
     bool? isCameraOn,
     bool? isMicOn,
     bool? isFrontCamera,
@@ -31,10 +45,15 @@ class CallState {
     String? callId,
     String? partnerId,
     bool? isLocalVideoEnabled,
+    bool? isSwapped,
+    Offset? localVideoPosition,
+    double? localVideoWidth,
+    double? localVideoHeight,
+    bool? isReconnecting,
   }) {
     return CallState(
-      localRenderer: localRenderer,
-      remoteRenderer: remoteRenderer,
+      localRenderer: localRenderer ?? this.localRenderer,
+      remoteRenderer: remoteRenderer ?? this.remoteRenderer,
       isCameraOn: isCameraOn ?? this.isCameraOn,
       isMicOn: isMicOn ?? this.isMicOn,
       isFrontCamera: isFrontCamera ?? this.isFrontCamera,
@@ -42,6 +61,11 @@ class CallState {
       callId: callId ?? this.callId,
       partnerId: partnerId ?? this.partnerId,
       isLocalVideoEnabled: isLocalVideoEnabled ?? this.isLocalVideoEnabled,
+      isSwapped: isSwapped ?? this.isSwapped,
+      localVideoPosition: localVideoPosition ?? this.localVideoPosition,
+      localVideoWidth: localVideoWidth ?? this.localVideoWidth,
+      localVideoHeight: localVideoHeight ?? this.localVideoHeight,
+      isReconnecting: isReconnecting ?? this.isReconnecting,
     );
   }
 }

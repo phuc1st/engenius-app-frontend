@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'http://localhost:8222/api/v1';
+  static const String baseUrl = 'http://192.168.1.10:8222/api/v1';
 
   static const String authToken = '$baseUrl/identity/auth/token';
   static const String registration = '$baseUrl/identity/users/registration';
@@ -12,4 +12,12 @@ class ApiConstants {
   static const String submitTest = '$baseUrl/learn/test-attempt/submit';
   static const String getTestAttempt = '$baseUrl/learn/test-attempt';
   static const String saveTest = '$baseUrl/learn/test-attempt/save';
+
+  // Daily Tasks
+  static const String dailyTasks = '$baseUrl/learn/daily-tasks';
+  static const String dailyTaskProgress = '$baseUrl/learn/daily-tasks/progress';
+
+  // Study Group endpoints
+  static const String studyGroups = '$baseUrl/learn/groups';
+  static const String groupTasks = '$baseUrl/learn/groups/tasks';
 }
