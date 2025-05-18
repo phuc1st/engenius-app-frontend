@@ -17,6 +17,7 @@ import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.d
 import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_screen.dart';
 import 'package:toeic/ui/profile/widgets/edit_profile_screen.dart';
 import 'package:toeic/ui/profile/widgets/profile_screen.dart';
+import 'package:toeic/ui/study_group/widgets/create_group_screen.dart';
 import 'package:toeic/ui/study_group/widgets/group_detail_screen.dart';
 import 'package:toeic/ui/study_group/widgets/group_list_screen.dart';
 import 'package:toeic/ui/study_group/widgets/study_session_screen.dart';
@@ -76,7 +77,7 @@ class MyApp extends ConsumerWidget {
       ),
       // initialRoute: Routes.grammar,
       // onGenerateRoute: generateRoute
-      home: GroupListScreen()
+      home: ToeicTestScreen(testId: 2,)
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toeic/ui/study_group/widgets/create_group_screen.dart';
 import '../../../utils/app_text_styles.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/gradient_app_bar.dart';
@@ -50,8 +51,14 @@ class GroupListScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to create group
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateGroupScreen()),
+          );
+          if (result == true) {
+            // TODO: Refresh lại danh sách nhóm nếu cần
+          }
         },
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.add),

@@ -6,6 +6,7 @@ import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/answer_widget.da
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/bottom_action_bar.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_overview_bottom_sheet.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_widget.dart';
+import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/test_timer_widget.dart';
 
 class ToeicTestScreen extends ConsumerStatefulWidget {
   int testId;
@@ -124,7 +125,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       Routes.home,
-                          (route) => false,
+                      (route) => false,
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -298,10 +299,9 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                           color: Colors.blueAccent,
                         ),
                         SizedBox(width: 4),
-                        Text(
-                          "01:58:03",
-                          textAlign: TextAlign.end,
-                          style: TextStyle(fontSize: 16),
+                        TestTimerText(
+                          initialTime: Duration(hours: 2),
+                          onCountdownFinished: submitTestHandler,
                         ),
                       ],
                     ),
