@@ -10,7 +10,7 @@ class LoginViewModel extends StateNotifier<AsyncValue<LoginResponse>> {
   LoginViewModel({required AuthRepository loginRepository})
       : _loginRepository = loginRepository,
         super(AsyncValue.data(
-        LoginResponse(token: '', expiryTime: DateTime.fromMillisecondsSinceEpoch(0)),
+        LoginResponse(token: '',refreshToken: '', expiryTime: DateTime.fromMillisecondsSinceEpoch(0)),
       ));
 
   Future<void> login(LoginRequest request) async {

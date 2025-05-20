@@ -3,6 +3,7 @@ class ApiConstants {
 
   static const String authToken = '$baseUrl/identity/auth/token';
   static const String registration = '$baseUrl/identity/users/registration';
+  static const String getMyInfo = "http://localhost:8222/api/v1/identity/users/my-info";
   static String getTopics(String userId) =>
       '$baseUrl/learn/progress/vocabulary/user/$userId/full-progress';
   static const String createNewTopicProgress = '$baseUrl/learn/progress/vocabulary/start';

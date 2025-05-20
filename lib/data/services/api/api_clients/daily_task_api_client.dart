@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/config/api_constants.dart';
-import 'package:toeic/data/services/api/api_clients/private_api_client.dart';
+import 'package:toeic/data/services/api/api_clients/base_api_client.dart';
 import 'package:toeic/data/services/api/model/api_response.dart';
 import 'package:toeic/data/services/api/model/daily_task/daily_task.dart';
 import 'package:toeic/utils/json_helpers.dart';
 
-class DailyTaskApiClient extends PrivateBaseApiClient {
+class DailyTaskApiClient extends BaseApiClient {
   DailyTaskApiClient({super.dio});
 
   Future<ApiResponse<List<DailyTask>>> getDailyTasks(String userId) async {

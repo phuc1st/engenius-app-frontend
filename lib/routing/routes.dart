@@ -10,4 +10,5 @@ final class Routes{
   static const toeicPractice = '/$toeicTest';
   static const toeicTest = '/$toeicTestResult';
   static const toeicTestResult = 'toeicTestResult';
+  static const aiConversation = 'aiConversation';
 }

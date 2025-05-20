@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/services/api/model/login_request/login_request.dart';
+import 'package:toeic/data/services/local/token_service.dart';
 import 'package:toeic/provider/auth_providers.dart';
+import 'package:toeic/routing/routes.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -14,35 +16,41 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   bool isObscure = true;
+  bool rememberUser = false;
+  bool _hasShownMessage = false;
 
   void _handleLogin() {
     if (usernameController.text.trim().isEmpty ||
         passwordController.text.trim().isEmpty) {
-      _showSnackbar(context, "Vui lòng nhập đầy đủ thông tin");
+      _showSnackBar(context, "Vui lòng nhập đầy đủ thông tin");
     } else {
+      _hasShownMessage = false;
       final request = LoginRequest(
         username: usernameController.text.trim(),
         password: passwordController.text,
+        rememberUser: rememberUser,
       );
 
       ref.read(loginViewModelProvider.notifier).login(request);
     }
   }
 
+  void _toggleRememberUser() {
+    setState(() {
+      rememberUser = !rememberUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginViewModelProvider);
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.blue[50]!,
-              Colors.white,
-            ],
+            colors: [Colors.blue[50]!, Colors.white],
           ),
         ),
         child: SafeArea(
@@ -70,7 +78,7 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.blue.withOpacity(0.1),
+                                  color: Colors.blue.withAlpha(25),
                                   blurRadius: 10,
                                   offset: const Offset(0, 4),
                                 ),
@@ -129,41 +137,60 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
                       icon: Icons.lock_outline,
                       isPassword: true,
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Quên mật khẩu?",
-                          style: TextStyle(
-                            color: Colors.blue[700],
-                            fontWeight: FontWeight.w600,
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: rememberUser,
+                          onChanged: (value) {
+                            _toggleRememberUser();
+                          },
+                          activeColor: Colors.blue[700],
+                        ),
+                        GestureDetector(
+                          onTap: _toggleRememberUser,
+                          child: Text(
+                            "Nhớ đăng nhập",
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                            ),
                           ),
                         ),
-                      ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Quên mật khẩu?",
+                            style: TextStyle(
+                              color: Colors.blue[700],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 24),
                     loginState.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : ElevatedButton(
-                            onPressed: _handleLogin,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue[700],
-                              foregroundColor: Colors.white,
-                              minimumSize: const Size(double.infinity, 56),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: 0,
+                          onPressed: _handleLogin,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[700],
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 56),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            child: const Text(
-                              "Đăng nhập",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            elevation: 0,
+                          ),
+                          child: const Text(
+                            "Đăng nhập",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ),
                     const SizedBox(height: 24),
                     Row(
                       children: [
@@ -221,7 +248,9 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.signup);
+                          },
                           child: Text(
                             "Đăng ký ngay",
                             style: TextStyle(
@@ -239,29 +268,41 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
               ),
               loginState.when(
                 data: (data) {
-                  if (data.token.isNotEmpty) {
-                    Future.microtask(() {
-                      _showCenteredDialog(
-                        context,
-                        "Đăng nhập thành công",
-                        "Token: ${data.token}\nExpiry Time: ${data.expiryTime}",
-                      );
+                  if (data.token.isNotEmpty && !_hasShownMessage) {
+                    _hasShownMessage = true;
+                    TokenManager().setTokens(
+                      accessToken: data.token,
+                      refreshToken: data.refreshToken,
+                    );
+                    final navigator = Navigator.of(context);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _showSnackBar(context, "Đăng nhập thành công");
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        navigator.pushNamedAndRemoveUntil(
+                          Routes.home,
+                          (route) => false,
+                        );
+                      });
                     });
                   }
                   return const SizedBox.shrink();
                 },
                 error: (error, _) {
-                  Future.microtask(() {
-                    _showSnackbar(context, error.toString(), isError: true);
-                  });
+                  if (!_hasShownMessage) {
+                    _hasShownMessage = true;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _showSnackBar(context, error.toString(), isError: true);
+                    });
+                  }
                   return const SizedBox.shrink();
                 },
-                loading: () => Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  ),
-                ),
+                loading:
+                    () => Container(
+                      color: Colors.black.withAlpha(128),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      ),
+                    ),
               ),
             ],
           ),
@@ -305,19 +346,20 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.red),
         ),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  isObscure ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[600],
-                ),
-                onPressed: () {
-                  setState(() {
-                    isObscure = !isObscure;
-                  });
-                },
-              )
-            : null,
+        suffixIcon:
+            isPassword
+                ? IconButton(
+                  icon: Icon(
+                    isObscure ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey[600],
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                )
+                : null,
       ),
     );
   }
@@ -330,39 +372,42 @@ class _LogInScreenState extends ConsumerState<LoginScreen> {
   }) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          title,
-          style: TextStyle(
-            color: isError ? Colors.red : Colors.green,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(content),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isError ? Colors.red : Colors.green,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              title,
+              style: TextStyle(
+                color: isError ? Colors.red : Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            child: const Text("Đóng"),
+            content: Text(content),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isError ? Colors.red : Colors.green,
+                ),
+                child: const Text("Đóng"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
-  void _showSnackbar(BuildContext context, String message, {bool isError = false}) {
+  void _showSnackBar(
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: isError ? Colors.red : Colors.green,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.all(16),
       ),
     );

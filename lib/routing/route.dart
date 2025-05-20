@@ -3,6 +3,7 @@ import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_re
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/user_vocabulary_topic_progress_response.dart';
 import 'package:toeic/data/services/api/model/toeic_test_response/submit_test_response.dart';
 import 'package:toeic/routing/routes.dart';
+import 'package:toeic/ui/ai_conversation/widgets/ai_chat_screen.dart';
 import 'package:toeic/ui/auth/login/widgets/login_screen.dart';
 import 'package:toeic/ui/auth/sign_up/widgets/sign_up_screen.dart';
 import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_detail_screen.dart';
@@ -60,6 +61,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (_) => ToeicTestResultScreen(result: testResult),
       );
+    case Routes.aiConversation:
+      return MaterialPageRoute(builder: (_)=> AIChatScreen());
     default:
       return MaterialPageRoute(
         builder:

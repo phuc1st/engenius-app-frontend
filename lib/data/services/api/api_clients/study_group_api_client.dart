@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/config/api_constants.dart';
-import 'package:toeic/data/services/api/api_clients/private_api_client.dart';
+import 'package:toeic/data/services/api/api_clients/base_api_client.dart';
 import 'package:toeic/data/services/api/model/api_response.dart';
 import 'package:toeic/data/services/api/model/study_group/group_task.dart';
 import 'package:toeic/data/services/api/model/study_group/group_task_progress.dart';
@@ -8,7 +8,7 @@ import 'package:toeic/data/services/api/model/study_group/leaderboard_entry.dart
 import 'package:toeic/data/services/api/model/study_group/study_group.dart';
 import 'package:toeic/utils/json_helpers.dart';
 
-class StudyGroupApiClient extends PrivateBaseApiClient {
+class StudyGroupApiClient extends BaseApiClient {
   StudyGroupApiClient({super.dio});
 
   Future<ApiResponse<StudyGroup>> createGroup(

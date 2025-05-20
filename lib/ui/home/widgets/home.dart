@@ -298,7 +298,7 @@ class HomeScreen extends StatelessWidget {
       {
         'icon': Icons.chat,
         'title': 'AI Chat',
-        'route': Routes.topicDetail,
+        'route': Routes.aiConversation,
         'color': Colors.red,
         'gradient': [Colors.red[400]!, Colors.red[700]!],
       },
