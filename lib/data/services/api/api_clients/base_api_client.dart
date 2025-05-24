@@ -8,7 +8,7 @@ import 'package:toeic/data/services/local/token_service.dart';
 abstract class BaseApiClient {
   final Dio dio;
 
-  BaseApiClient({Dio? dio, Map<String, dynamic>? defaultHeaders})
+  BaseApiClient({Dio? dio})
     : dio =
           dio ??
           Dio(
@@ -17,7 +17,6 @@ abstract class BaseApiClient {
                 if (status == 401) return false;
                 return status != null && status < 600;
               },
-              headers: defaultHeaders ?? {'Content-Type': 'application/json'},
             ),
           ) {
     this.dio.interceptors.add(
@@ -25,7 +24,7 @@ abstract class BaseApiClient {
         onRequest: (options, handler) async {
           final useToken = options.extra['useToken'] ?? false;
           if (useToken) {
-            final accessToken = await TokenManager().getAccessToken();
+            final accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJwaHVjLmNvbSIsInN1YiI6IjE3NTE0NWU1LWMyMTAtNDc0MS1hNDVhLWI5NzY0YjdlODRmYyIsImV4cCI6MTc0ODEwMDUzOCwiaWF0IjoxNzQ4MDk2OTM4LCJqdGkiOiI0M2M0YTg3YS03ZGFkLTRkMDMtYTRjMi0wZmYxYTEzM2ZiODgiLCJzY29wZSI6IlJPTEVfVVNFUiJ9.Y1TBpn8p-GGQjgrbIdT26A2_NXwjiQeXlwLDUiWgX2FVORBkmPrPcy8O3XTVd7MlwjaJlWjMBE1DjfaohUyWCg";
             if (accessToken != null && accessToken.isNotEmpty) {
               options.headers['Authorization'] = 'Bearer $accessToken';
             }
@@ -86,16 +85,19 @@ abstract class BaseApiClient {
   Future<ApiResponse<T>> makeRequest<T>({
     required String url,
     required String method,
-    Map<String, dynamic>? body,
+    dynamic body,
     required T Function(dynamic json) fromJson,
     Map<String, dynamic>? queryParameters,
     bool useToken = false,
+    Map<String, dynamic>? headers,
   }) async {
     try {
       final response = await dio.request(
         url,
         data: body,
-        options: Options(method: method, extra: {'useToken': useToken}),
+        options: Options(method: method,
+            headers: headers?? {'Content-Type': 'application/json'},
+            extra: {'useToken': useToken}),
         queryParameters: queryParameters,
       );
 

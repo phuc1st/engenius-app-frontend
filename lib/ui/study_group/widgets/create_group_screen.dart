@@ -1,138 +1,127 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:dio/dio.dart';
-import '../../../utils/app_colors.dart';
-import '../../../utils/app_text_styles.dart';
+import 'package:toeic/provider/create_group_provider.dart';
+import 'package:http_parser/http_parser.dart';
 
-class CreateGroupScreen extends StatefulWidget {
+class CreateGroupScreen extends ConsumerStatefulWidget {
   const CreateGroupScreen({super.key});
 
   @override
-  State<CreateGroupScreen> createState() => _CreateGroupScreenState();
+  ConsumerState<CreateGroupScreen> createState() => _CreateGroupScreenState();
 }
 
-class _CreateGroupScreenState extends State<CreateGroupScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descController = TextEditingController();
+class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
-  File? _avatarFile;
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  File? _avatar;
 
-  Future<void> _pickAvatar() async {
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
       setState(() {
-        _avatarFile = File(picked.path);
+        _avatar = File(picked.path);
       });
+    }
+  }
+
+  Future<void> _createGroup() async {
+    if (_formKey.currentState!.validate()) {
+      final viewModel = ref.read(createGroupViewModelProvider.notifier);
+      final success = await viewModel.createGroup(
+        name: _nameController.text,
+        description: _descriptionController.text,
+        avatar: _avatar,
+      );
+      if (success && mounted) {
+        Navigator.pop(context, true);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(createGroupViewModelProvider);
+    final isLoading = state.isLoading;
+    final error = state.error;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tạo nhóm học tập'),
-        backgroundColor: AppColors.primary,
+        title: const Text('Tạo nhóm học'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Center(
-                child: GestureDetector(
-                  onTap: _pickAvatar,
-                  child: CircleAvatar(
-                    radius: 48,
-                    backgroundImage: _avatarFile != null ? FileImage(_avatarFile!) : null,
-                    child: _avatarFile == null
-                        ? const Icon(Icons.camera_alt, size: 40, color: Colors.white70)
-                        : null,
-                    backgroundColor: AppColors.primary.withOpacity(0.3),
-                  ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: _avatar != null ? FileImage(_avatar!) : null,
+                child: _avatar == null
+                    ? const Icon(Icons.add_a_photo, size: 40)
+                    : null,
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Tên nhóm',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập tên nhóm';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Mô tả',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Vui lòng nhập mô tả';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            if (error != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  error,
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
-              const SizedBox(height: 16),
-              Text('Tên nhóm', style: AppTextStyles.titleMedium),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Nhập tên nhóm',
-                ),
-                validator: (value) => value == null || value.isEmpty ? 'Vui lòng nhập tên nhóm' : null,
-              ),
-              const SizedBox(height: 20),
-              Text('Mô tả', style: AppTextStyles.titleMedium),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _descController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Nhập mô tả nhóm',
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: _isLoading ? null : _onCreateGroup,
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Tạo nhóm', style: TextStyle(fontSize: 18)),
-                ),
-              ),
-            ],
-          ),
+            ElevatedButton(
+              onPressed: isLoading ? null : _createGroup,
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Tạo nhóm'),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  void _onCreateGroup() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
-
-    try {
-      final dio = Dio();
-      final formData = FormData.fromMap({
-        'name': _nameController.text,
-        'description': _descController.text,
-        if (_avatarFile != null)
-          'avatar': await MultipartFile.fromFile(_avatarFile!.path, filename: _avatarFile!.path.split('/').last),
-      });
-
-      final response = await dio.post(
-        'http://<YOUR_BACKEND_URL>/api/groups', // Đổi lại endpoint phù hợp
-        data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-        ),
-      );
-
-      setState(() => _isLoading = false);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (mounted) Navigator.pop(context, true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tạo nhóm thất bại!')),
-        );
-      }
-    } catch (e) {
-      setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lỗi: $e')),
-      );
-    }
   }
 } 

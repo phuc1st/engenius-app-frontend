@@ -1,24 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/data/services/api/model/study_group/group_node_response.dart';
+import 'package:toeic/data/services/api/model/study_group/group_study_response.dart';
+import 'package:toeic/provider/group_list_provider.dart';
 import 'package:toeic/ui/study_group/widgets/create_group_screen.dart';
+
 import '../../../utils/app_text_styles.dart';
 import '../../../utils/app_colors.dart';
 import '../../../utils/gradient_app_bar.dart';
 
-class GroupListScreen extends StatelessWidget {
+class GroupListScreen extends ConsumerStatefulWidget {
   const GroupListScreen({super.key});
 
   @override
+  ConsumerState<GroupListScreen> createState() => _GroupListScreenState();
+}
+
+class _GroupListScreenState extends ConsumerState<GroupListScreen> {
+  final _scrollController = ScrollController();
+  final _searchController = TextEditingController();
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(groupListViewModelProvider.notifier).loadGroups();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(groupListViewModelProvider.notifier).loadGroups();
+    }
+  }
+
+  Future<void> _joinGroup(String groupId) async {
+    final success = await ref.read(groupListViewModelProvider.notifier).joinGroup(groupId);
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tham gia nhóm thành công')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(groupListViewModelProvider);
+
     return Scaffold(
       appBar: GradientAppBar(
-        title: Text(
-          'Nhóm học tập',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
-        ),
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Tìm kiếm nhóm',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: AppColors.primary.withOpacity(0.7)),
+                ),
+                style: TextStyle(color: AppColors.primary),
+                onSubmitted: (query) {
+                  ref.read(groupListViewModelProvider.notifier).searchGroups(query);
+                },
+              )
+            : Text(
+                'Nhóm học tập',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: AppColors.primary,
@@ -26,10 +87,16 @@ class GroupListScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
             color: AppColors.primary,
             onPressed: () {
-              // TODO: Implement search
+              setState(() {
+                _isSearching = !_isSearching;
+                if (!_isSearching) {
+                  _searchController.clear();
+                  ref.read(groupListViewModelProvider.notifier).searchGroups('');
+                }
+              });
             },
           ),
         ],
@@ -42,12 +109,28 @@ class GroupListScreen extends StatelessWidget {
             colors: AppColors.primaryGradient,
           ),
         ),
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: 10, // Dummy data
-          itemBuilder: (context, index) {
-            return _buildGroupCard(context, index);
-          },
+        child: RefreshIndicator(
+          onRefresh: () => ref.read(groupListViewModelProvider.notifier).loadGroups(refresh: true),
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(16),
+            itemCount: state.groups.length + (state.hasMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == state.groups.length) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                    ),
+                  ),
+                );
+              }
+
+              final group = state.groups[index];
+              return _buildGroupCard(context, group);
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -57,7 +140,7 @@ class GroupListScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const CreateGroupScreen()),
           );
           if (result == true) {
-            // TODO: Refresh lại danh sách nhóm nếu cần
+            ref.read(groupListViewModelProvider.notifier).loadGroups(refresh: true);
           }
         },
         backgroundColor: AppColors.primary,
@@ -66,7 +149,7 @@ class GroupListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGroupCard(BuildContext context, int index) {
+  Widget _buildGroupCard(BuildContext context, GroupNodeResponse group) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -103,7 +186,7 @@ class GroupListScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          'G${index + 1}',
+                          group.name[0].toUpperCase(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -118,90 +201,32 @@ class GroupListScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nhóm học tập ${index + 1}',
+                            group.name,
                             style: AppTextStyles.headlineSmall,
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            '${10 + index} thành viên',
+                            '${group.memberCount} thành viên',
                             style: AppTextStyles.bodySmall,
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.success.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        'Đang hoạt động',
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: AppColors.success,
+                    if (!group.joined)
+                      ElevatedButton(
+                        onPressed: () => _joinGroup(group.id),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
                         ),
+                        child: const Text('Tham gia'),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatItem(
-                      Icons.people,
-                      '${5 + index}',
-                      'Thành viên',
-                    ),
-                    _buildStatItem(
-                      Icons.task_alt,
-                      '${3 + index}',
-                      'Nhiệm vụ',
-                    ),
-                    _buildStatItem(
-                      Icons.timer,
-                      '${2 + index}h',
-                      'Học tập',
-                    ),
                   ],
                 ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatItem(IconData icon, String value, String label) {
-    return Flexible(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 20,
-            color: AppColors.textSecondary,
-          ),
-          const SizedBox(width: 4),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                value,
-                style: AppTextStyles.titleMedium,
-              ),
-              Text(
-                label,
-                style: AppTextStyles.bodySmall,
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

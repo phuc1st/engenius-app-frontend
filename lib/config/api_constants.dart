@@ -21,4 +21,8 @@ class ApiConstants {
   // Study Group endpoints
   static const String studyGroups = '$baseUrl/learn/groups';
   static const String groupTasks = '$baseUrl/learn/groups/tasks';
+
+  static const String groupStudy = '$baseUrl/learn/group-study';
+
+  static const String groupEndPoint = '$baseUrl/profile/internal/group-node';
 }

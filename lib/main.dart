@@ -75,9 +75,9 @@ class MyApp extends ConsumerWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: Routes.login,
-      onGenerateRoute: generateRoute
-      // home: LoginScreen()
+      // initialRoute: Routes.login,
+      // onGenerateRoute: generateRoute
+      home: GroupListScreen()
     );
   }
 }
