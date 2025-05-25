@@ -25,4 +25,8 @@ class ApiConstants {
   static const String groupStudy = '$baseUrl/learn/group-study';
 
   static const String groupEndPoint = '$baseUrl/profile/internal/group-node';
+
+  //Chat
+  static const String chatEndPoint = '$baseUrl/call';
+  static const String chatSocket = 'ws://192.168.1.10:8222/api/v1/call';
 }

@@ -18,8 +18,10 @@ import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_screen.d
 import 'package:toeic/ui/profile/widgets/edit_profile_screen.dart';
 import 'package:toeic/ui/profile/widgets/profile_screen.dart';
 import 'package:toeic/ui/study_group/widgets/create_group_screen.dart';
+import 'package:toeic/ui/study_group/widgets/group_chat_screen.dart';
 import 'package:toeic/ui/study_group/widgets/group_detail_screen.dart';
 import 'package:toeic/ui/study_group/widgets/group_list_screen.dart';
+import 'package:toeic/ui/study_group/widgets/joined_group_list_screen.dart';
 import 'package:toeic/ui/study_group/widgets/study_session_screen.dart';
 import 'package:toeic/ui/study_groups2/widgets/study_groups_screen.dart';
 import 'package:toeic/ui/toeic_practice/list_test/widgets/list_test_screen.dart';
@@ -77,7 +79,7 @@ class MyApp extends ConsumerWidget {
       ),
       // initialRoute: Routes.login,
       // onGenerateRoute: generateRoute
-      home: GroupListScreen()
+      home: GroupChatScreen(groupId: "1", groupName: "tâm", userId: "2", senderName: "loan")
     );
   }
 }
