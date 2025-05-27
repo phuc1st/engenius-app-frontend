@@ -29,4 +29,8 @@ class ApiConstants {
   //Chat
   static const String chatEndPoint = '$baseUrl/call';
   static const String chatSocket = 'ws://192.168.1.10:8222/api/v1/call';
+
+  //Profile endpoints
+  static const String _profile = '$baseUrl/profile';
+  static const String getMyProfile = '$_profile/users/my-profile';
 }

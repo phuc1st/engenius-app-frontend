@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/services/api/model/study_group/group_node_response.dart';
 import 'package:toeic/provider/study_group_provider.dart';
-import 'package:toeic/ui/study_group/widgets/create_group_screen.dart';
+import 'package:toeic/routing/routes.dart';
+import 'package:toeic/ui/group_study/widgets/create_group_screen.dart';
 
 import '../../../utils/app_text_styles.dart';
 import '../../../utils/app_colors.dart';
@@ -44,11 +45,13 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
   }
 
   Future<void> _joinGroup(String groupId) async {
-    final success = await ref.read(groupListViewModelProvider.notifier).joinGroup(groupId);
+    final success = await ref
+        .read(groupListViewModelProvider.notifier)
+        .joinGroup(groupId);
     if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tham gia nhóm thành công')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Tham gia nhóm thành công')));
     }
   }
 
@@ -58,27 +61,32 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
 
     return Scaffold(
       appBar: GradientAppBar(
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Tìm kiếm nhóm',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: AppColors.primary.withOpacity(0.7)),
+        title:
+            _isSearching
+                ? TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Tìm kiếm nhóm',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(
+                      color: AppColors.primary.withOpacity(0.7),
+                    ),
+                  ),
+                  style: TextStyle(color: AppColors.primary),
+                  onSubmitted: (query) {
+                    ref
+                        .read(groupListViewModelProvider.notifier)
+                        .searchGroups(query);
+                  },
+                )
+                : Text(
+                  'Nhóm học tập',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
-                style: TextStyle(color: AppColors.primary),
-                onSubmitted: (query) {
-                  ref.read(groupListViewModelProvider.notifier).searchGroups(query);
-                },
-              )
-            : Text(
-                'Nhóm học tập',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: AppColors.primary,
@@ -93,7 +101,9 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
                 _isSearching = !_isSearching;
                 if (!_isSearching) {
                   _searchController.clear();
-                  ref.read(groupListViewModelProvider.notifier).searchGroups('');
+                  ref
+                      .read(groupListViewModelProvider.notifier)
+                      .searchGroups('');
                 }
               });
             },
@@ -109,7 +119,10 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
           ),
         ),
         child: RefreshIndicator(
-          onRefresh: () => ref.read(groupListViewModelProvider.notifier).loadGroups(refresh: true),
+          onRefresh:
+              () => ref
+                  .read(groupListViewModelProvider.notifier)
+                  .loadGroups(refresh: true),
           child: ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.all(16),
@@ -119,9 +132,7 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   ),
                 );
               }
@@ -134,13 +145,10 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateGroupScreen()),
-          );
-          if (result == true) {
-            ref.read(groupListViewModelProvider.notifier).loadGroups(refresh: true);
-          }
+          Navigator.pushNamed(context, Routes.createGroupStudy);
+          ref
+              .read(groupListViewModelProvider.notifier)
+              .loadGroups(refresh: true);
         },
         backgroundColor: AppColors.primary,
         child: const Icon(Icons.add),
@@ -199,10 +207,7 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            group.name,
-                            style: AppTextStyles.headlineSmall,
-                          ),
+                          Text(group.name, style: AppTextStyles.headlineSmall),
                           const SizedBox(height: 4),
                           Text(
                             '${group.memberCount} thành viên',
@@ -229,4 +234,4 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
       ),
     );
   }
-} 
+}

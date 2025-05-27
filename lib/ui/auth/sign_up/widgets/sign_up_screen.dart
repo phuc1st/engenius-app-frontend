@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/services/api/model/signup_request/signup_request.dart';
 import 'package:toeic/provider/auth_providers.dart';
+import 'package:toeic/routing/routes.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -45,8 +46,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           const SnackBar(
             content: Text("Đăng ký thành công!"),
             backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
           ),
         );
+        Future.delayed(Duration(seconds: 2),(){
+          if(!context.mounted) return;
+          Navigator.pushNamed(context, Routes.login);
+        });
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

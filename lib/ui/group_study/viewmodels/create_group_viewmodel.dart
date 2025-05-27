@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/data/repositories/group_study_repository.dart';
+import 'package:toeic/data/repositories/group_study/group_study_repository.dart';
 import 'package:toeic/data/services/api/model/api_response.dart';
 import 'package:toeic/data/services/api/model/study_group/group_study_create_request.dart';
 import 'package:toeic/data/services/api/model/study_group/group_study_response.dart';

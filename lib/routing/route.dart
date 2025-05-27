@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:toeic/data/services/api/model/learn_vocabulary_response/topic_response.dart';
 import 'package:toeic/data/services/api/model/learn_vocabulary_response/user_vocabulary_topic_progress_response.dart';
 import 'package:toeic/data/services/api/model/toeic_test_response/submit_test_response.dart';
+import 'package:toeic/routing/route_arguments/group_chat_arguments.dart';
 import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/ai_conversation/widgets/ai_chat_screen.dart';
 import 'package:toeic/ui/auth/login/widgets/login_screen.dart';
 import 'package:toeic/ui/auth/sign_up/widgets/sign_up_screen.dart';
 import 'package:toeic/ui/grammar/grammar_detail/widgets/grammar_detail_screen.dart';
 import 'package:toeic/ui/grammar/list_grammar/widgets/grammar_screen.dart';
+import 'package:toeic/ui/group_study/widgets/create_group_screen.dart';
+import 'package:toeic/ui/group_study/widgets/group_chat_screen.dart';
+import 'package:toeic/ui/group_study/widgets/group_list_screen.dart';
+import 'package:toeic/ui/group_study/widgets/joined_group_list_screen.dart';
 import 'package:toeic/ui/home/widgets/home.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.dart';
 import 'package:toeic/ui/learn_vocabulary/topic_detail/widgets/topic_detail_screen.dart';
@@ -31,6 +35,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => VocabularyScreen());
     case Routes.topicDetail:
       final topic = settings.arguments as UserVocabularyTopicProgressResponse;
+      if (topic == null) {
+        return _errorRoute('Missing topic detail argument');
+      }
       return MaterialPageRoute(builder: (_) => TopicDetailScreen(topic: topic));
     case Routes.flashCard:
       final progressId = settings.arguments as int;
@@ -62,7 +69,33 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (_) => ToeicTestResultScreen(result: testResult),
       );
     case Routes.aiConversation:
-      return MaterialPageRoute(builder: (_)=> AIChatScreen());
+      return MaterialPageRoute(builder: (_) => AIChatScreen());
+
+    //GROUP STUDY
+    case Routes.groupStudy:
+      return MaterialPageRoute(builder: (_) => GroupListScreen());
+    case Routes.createGroupStudy:
+      return MaterialPageRoute(builder: (_) => CreateGroupScreen());
+    case Routes.joinedGroup:
+      return MaterialPageRoute(builder: (_) => JoinedGroupListScreen());
+    case Routes.groupChat:
+      final args = settings.arguments as GroupChatArguments;
+      if (args == null) {
+        return _errorRoute('Missing topic detail argument');
+      }
+      return MaterialPageRoute(
+        builder:
+            (_) => GroupChatScreen(
+              groupId: args.groupId,
+              groupName: args.groupName,
+              userId: args.userId,
+              senderName: args.senderName,
+            ),
+      );
+
+    //DAILY TASK
+    case Routes.dailyTask:
+      return MaterialPageRoute(builder: (_) => AIChatScreen());
     default:
       return MaterialPageRoute(
         builder:
@@ -73,4 +106,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
             ),
       );
   }
+}
+Route<dynamic> _errorRoute(String message) {
+  return MaterialPageRoute(
+    builder: (_) => Scaffold(
+      body: Center(child: Text(message)),
+    ),
+  );
 }

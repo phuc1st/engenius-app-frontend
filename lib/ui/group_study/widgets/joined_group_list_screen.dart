@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/data/services/api/model/study_group/group_node_response.dart';
 import 'package:toeic/provider/study_group_provider.dart';
-import 'package:toeic/ui/study_group/widgets/group_detail_screen.dart';
-import 'package:toeic/ui/study_group/widgets/group_chat_screen.dart';
+import 'package:toeic/routing/route_arguments/group_chat_arguments.dart';
+import 'package:toeic/routing/routes.dart';
 
-import '../../../utils/app_text_styles.dart';
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_text_styles.dart';
 import '../../../utils/gradient_app_bar.dart';
 
 class JoinedGroupListScreen extends ConsumerStatefulWidget {
   const JoinedGroupListScreen({super.key});
 
   @override
-  ConsumerState<JoinedGroupListScreen> createState() => _JoinedGroupListScreenState();
+  ConsumerState<JoinedGroupListScreen> createState() =>
+      _JoinedGroupListScreenState();
 }
 
 class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
@@ -70,7 +71,10 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
           ),
         ),
         child: RefreshIndicator(
-          onRefresh: () => ref.read(joinedGroupListViewModelProvider.notifier).loadGroups(refresh: true),
+          onRefresh:
+              () => ref
+                  .read(joinedGroupListViewModelProvider.notifier)
+                  .loadGroups(refresh: true),
           child: ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.all(16),
@@ -80,9 +84,7 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   ),
                 );
               }
@@ -114,15 +116,14 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (context) => GroupChatScreen(
-                  groupId: group.id,
-                  groupName: group.name,
-                  userId: "2",
-                  senderName: "loan",
-                ),
+              Routes.groupChat,
+              arguments: GroupChatArguments(
+                groupId: group.id,
+                groupName: group.name,
+                userId: "2",
+                senderName: "loan",
               ),
             );
           },
@@ -157,10 +158,7 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            group.name,
-                            style: AppTextStyles.headlineSmall,
-                          ),
+                          Text(group.name, style: AppTextStyles.headlineSmall),
                           const SizedBox(height: 4),
                           Text(
                             '${group.memberCount} thành viên',
@@ -178,4 +176,4 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
       ),
     );
   }
-} 
+}

@@ -291,7 +291,7 @@ class HomeScreen extends StatelessWidget {
       {
         'icon': Icons.group,
         'title': 'Nhóm học',
-        'route': Routes.topicDetail,
+        'route': Routes.groupStudy,
         'color': Colors.blue,
         'gradient': [Colors.blue[400]!, Colors.blue[700]!],
       },
@@ -305,7 +305,7 @@ class HomeScreen extends StatelessWidget {
       {
         'icon': Icons.task_alt,
         'title': 'Nhiệm vụ',
-        'route': Routes.topicDetail,
+        'route': Routes.dailyTask,
         'color': Colors.teal,
         'gradient': [Colors.teal[400]!, Colors.teal[700]!],
       },
@@ -336,7 +336,7 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final feature = features[index];
             return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, feature['route'] as String),
+              onTap: () => Navigator.pushNamed(context, feature['route'] as String),//TODO Thêm arguments
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(

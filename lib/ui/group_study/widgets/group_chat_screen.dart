@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/data/services/api/model/study_group/group_message_response.dart';
 import 'package:toeic/provider/study_group_provider.dart';
-import 'package:toeic/ui/study_group/viewmodels/group_chat_state.dart';
+import 'package:toeic/ui/group_study/viewmodels/group_chat_state.dart';
 import 'package:toeic/utils/app_colors.dart';
 import 'package:toeic/utils/app_text_styles.dart';
 import 'package:toeic/utils/gradient_app_bar.dart';
@@ -118,15 +118,16 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
 
   void _scrollToBottom({bool animated = true}) async {
     if (_scrollController.hasClients) {
-      if (animated)
+      if (animated) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
           duration:
               animated ? const Duration(milliseconds: 1000) : Duration.zero,
           curve: Curves.easeOut,
         );
-      else
+      } else {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
       if (mounted) {
         setState(() => _showScrollToBottomButton = false);
       }

@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/data/services/push_notification_service.dart';
 import 'package:toeic/routing/route.dart';
 import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/ai_conversation/widgets/ai_chat_screen.dart';
@@ -17,12 +19,12 @@ import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card_screen.d
 import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_screen.dart';
 import 'package:toeic/ui/profile/widgets/edit_profile_screen.dart';
 import 'package:toeic/ui/profile/widgets/profile_screen.dart';
-import 'package:toeic/ui/study_group/widgets/create_group_screen.dart';
-import 'package:toeic/ui/study_group/widgets/group_chat_screen.dart';
-import 'package:toeic/ui/study_group/widgets/group_detail_screen.dart';
-import 'package:toeic/ui/study_group/widgets/group_list_screen.dart';
-import 'package:toeic/ui/study_group/widgets/joined_group_list_screen.dart';
-import 'package:toeic/ui/study_group/widgets/study_session_screen.dart';
+import 'package:toeic/ui/group_study/widgets/create_group_screen.dart';
+import 'package:toeic/ui/group_study/widgets/group_chat_screen.dart';
+import 'package:toeic/ui/group_study/widgets/group_detail_screen.dart';
+import 'package:toeic/ui/group_study/widgets/group_list_screen.dart';
+import 'package:toeic/ui/group_study/widgets/joined_group_list_screen.dart';
+import 'package:toeic/ui/group_study/widgets/study_session_screen.dart';
 import 'package:toeic/ui/study_groups2/widgets/study_groups_screen.dart';
 import 'package:toeic/ui/toeic_practice/list_test/widgets/list_test_screen.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/toeic_test_screen.dart';
@@ -32,7 +34,17 @@ import 'package:toeic/utils/temp.dart';
 import 'package:toeic/utils/test.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables (nếu cần)
   await dotenv.load(fileName: "assets/.env");
+
+  // Khởi tạo Firebase
+ /* await Firebase.initializeApp();
+
+  // Khởi tạo notification
+  final pushNotificationService = PushNotificationService();
+  await pushNotificationService.initialize();*/
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -77,9 +89,9 @@ class MyApp extends ConsumerWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      // initialRoute: Routes.login,
-      // onGenerateRoute: generateRoute
-      home: GroupChatScreen(groupId: "1", groupName: "tâm", userId: "2", senderName: "loan")
+      initialRoute: Routes.login,
+      onGenerateRoute: generateRoute
+      // home: ProfileScreen()
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toeic/data/repositories/group_study_repository.dart';
+import 'package:toeic/data/repositories/group_study/group_study_repository.dart';
 import 'package:toeic/data/services/api/model/study_group/group_message_response.dart';
 import 'package:toeic/utils/result.dart';
 import 'group_chat_state.dart';

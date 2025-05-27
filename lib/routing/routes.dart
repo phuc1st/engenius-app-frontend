@@ -11,4 +11,13 @@ final class Routes{
   static const toeicTest = '/$toeicTestResult';
   static const toeicTestResult = 'toeicTestResult';
   static const aiConversation = 'aiConversation';
+
+  //group study
+  static const groupStudy = 'groupStudy';
+  static const createGroupStudy = 'createGroupStudy';
+  static const joinedGroup = 'joinedGroup';
+  static const groupChat = 'chatGroup';
+
+  //daily task
+  static const dailyTask = 'dailyTask';
 }

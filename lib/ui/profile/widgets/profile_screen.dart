@@ -1,14 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../../provider/auth_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_text_styles.dart';
+import '../view_models/profile_view_model.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(profileViewModelProvider.notifier).getMyProfile());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(profileViewModelProvider);
+
+    if (state.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (state.error != null) {
+      return Scaffold(
+        body: Center(
+          child: Text('Lỗi: ${state.error}'),
+        ),
+      );
+    }
+
+    final profile = state.userProfileResponse;
+    if (profile == null) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Không tìm thấy thông tin người dùng'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hồ sơ cá nhân'),
@@ -60,22 +98,27 @@ class ProfileScreen extends StatelessWidget {
                 _buildInfoItem(
                   icon: Icons.person,
                   label: 'Họ và tên',
-                  value: 'Nguyễn Văn A',
+                  value: '${profile.firstName} ${profile.lastName}',
                 ),
                 _buildInfoItem(
                   icon: Icons.email,
                   label: 'Email',
-                  value: 'nguyenvana@gmail.com',
+                  value: profile.email,
                 ),
                 _buildInfoItem(
-                  icon: Icons.phone,
-                  label: 'Số điện thoại',
-                  value: '0123456789',
+                  icon: Icons.person_outline,
+                  label: 'Tên đăng nhập',
+                  value: profile.username,
                 ),
                 _buildInfoItem(
                   icon: Icons.location_on,
-                  label: 'Địa chỉ',
-                  value: 'Hà Nội, Việt Nam',
+                  label: 'Thành phố',
+                  value: profile.city,
+                ),
+                _buildInfoItem(
+                  icon: Icons.calendar_today,
+                  label: 'Ngày sinh',
+                  value: '${profile.dob.day}/${profile.dob.month}/${profile.dob.year}',
                 ),
               ],
             ),

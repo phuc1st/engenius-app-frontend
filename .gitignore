@@ -50,3 +50,4 @@ lib/utils/test.dart
 
 *.env
 .cursor
+google-services.json

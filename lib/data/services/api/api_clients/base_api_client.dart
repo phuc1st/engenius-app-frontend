@@ -24,7 +24,7 @@ abstract class BaseApiClient {
         onRequest: (options, handler) async {
           final useToken = options.extra['useToken'] ?? false;
           if (useToken) {
-            final accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJwaHVjLmNvbSIsInN1YiI6IjE3NTE0NWU1LWMyMTAtNDc0MS1hNDVhLWI5NzY0YjdlODRmYyIsImV4cCI6MTc0ODEwMDUzOCwiaWF0IjoxNzQ4MDk2OTM4LCJqdGkiOiI0M2M0YTg3YS03ZGFkLTRkMDMtYTRjMi0wZmYxYTEzM2ZiODgiLCJzY29wZSI6IlJPTEVfVVNFUiJ9.Y1TBpn8p-GGQjgrbIdT26A2_NXwjiQeXlwLDUiWgX2FVORBkmPrPcy8O3XTVd7MlwjaJlWjMBE1DjfaohUyWCg";
+            final accessToken = await TokenManager().getAccessToken();
             if (accessToken != null && accessToken.isNotEmpty) {
               options.headers['Authorization'] = 'Bearer $accessToken';
             }

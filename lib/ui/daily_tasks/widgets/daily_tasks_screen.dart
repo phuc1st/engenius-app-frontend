@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/ui/daily_tasks/view_models/daily_tasks_state.dart';
 import 'package:toeic/ui/daily_tasks/view_models/daily_tasks_view_model.dart';
 import 'package:toeic/ui/daily_tasks/widgets/daily_task_card.dart';
+import 'package:toeic/utils/app_colors.dart';
 
 class DailyTasksScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -30,6 +31,11 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Nhiệm vụ hàng ngày'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: AppColors.primary,
+          onPressed: () => Navigator.pop(context),
+        ),
         centerTitle: true,
       ),
       body: state.isLoading
