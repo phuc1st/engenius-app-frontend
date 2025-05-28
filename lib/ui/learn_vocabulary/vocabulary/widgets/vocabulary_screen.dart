@@ -4,6 +4,8 @@ import 'package:toeic/provider/learn_vocabulary_provider.dart';
 import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_header.dart';
 import 'package:toeic/ui/learn_vocabulary/vocabulary/widgets/vocabulary_topic_item.dart';
+import 'package:toeic/utils/app_colors.dart';
+import 'package:toeic/utils/gradient_app_bar.dart';
 
 class VocabularyScreen extends ConsumerStatefulWidget {
   const VocabularyScreen({super.key});
@@ -35,15 +37,20 @@ class _VocabularyScreenState extends ConsumerState<VocabularyScreen> {
     final topicsState = ref.watch(vocabularyViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+      appBar: GradientAppBar(
+        title: Text(
+          "Vocabulary",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text("VOCABULARY", style: TextStyle(color: Colors.black)),
-        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: AppColors.primary,
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: topicsState.when(
         loading: () => const Center(child: CircularProgressIndicator()),

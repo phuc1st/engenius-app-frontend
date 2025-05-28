@@ -9,9 +9,9 @@ import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/question_widget.
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/test_timer_widget.dart';
 
 class ToeicTestScreen extends ConsumerStatefulWidget {
-  int testId;
+  final int testId;
 
-  ToeicTestScreen({super.key, required this.testId});
+  const ToeicTestScreen({super.key, required this.testId});
 
   @override
   ConsumerState<ToeicTestScreen> createState() => _ToeicTestScreenState();
@@ -35,7 +35,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
   Future<void> submitTestHandler() async {
     print("Voaf");
     await ref
-        .read(toeicTestScreenViewModelProvider(widget.testId).notifier)
+        .read(toeicTestScreenViewModelProvider(2).notifier) //TODO Chỉnh lại toeic test Id ở đây
         .submitTest(
           onSuccess: (result) {
             Navigator.pushNamedAndRemoveUntil(
@@ -118,7 +118,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                     ref
                         .read(
                           toeicTestScreenViewModelProvider(
-                            widget.testId,
+                            2,
                           ).notifier,
                         )
                         .saveTest();
@@ -151,9 +151,9 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(toeicTestScreenViewModelProvider(widget.testId));
+    final state = ref.watch(toeicTestScreenViewModelProvider(2));
     final vm = ref.read(
-      toeicTestScreenViewModelProvider(widget.testId).notifier,
+      toeicTestScreenViewModelProvider(2).notifier,
     );
 
     if (state.isLoading) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/data/services/api/model/study_group/group_node_response.dart';
 import 'package:toeic/provider/study_group_provider.dart';
 import 'package:toeic/routing/routes.dart';
@@ -184,23 +185,22 @@ class _GroupListScreenState extends ConsumerState<GroupListScreen> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          group.name[0].toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.blue[50],
+                      backgroundImage: group.avatarUrl != null && group.avatarUrl.isNotEmpty
+                          ? NetworkImage(ApiConstants.baseUrl + group.avatarUrl)
+                          : null, // Nếu có avatarUrl thì load ảnh từ mạng, nếu không thì để nền trống
+                      child: group.avatarUrl == null || group.avatarUrl.isEmpty
+                          ? Text(
+                        group.name[0].toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
                         ),
-                      ),
+                      )
+                          : null, // Nếu có ảnh thì không hiển thị chữ
                     ),
                     const SizedBox(width: 16),
                     Expanded(

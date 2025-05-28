@@ -89,7 +89,7 @@ class MyApp extends ConsumerWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: Routes.login,
+      initialRoute: Routes.ipConfig,
       onGenerateRoute: generateRoute
       // home: ProfileScreen()
     );

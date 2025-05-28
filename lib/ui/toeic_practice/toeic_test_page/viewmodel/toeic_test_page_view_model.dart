@@ -26,7 +26,6 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
       state = state.copyWith(toeicTest: result.value);
 
       final testAttempt = await toeicPracticeRepository.getTestAttempts(
-        "user-1",
         testId,
       );
       if (testAttempt is Ok<List<TestAttemptAnswerResponse>>) {
@@ -67,8 +66,7 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
     required void Function(String message) onError,
   }) async{
     final submitTestRequest = SubmitTestRequest(
-      testId: 1,
-      userId: "user-1",
+      testId: testId,
       answers:
           state.answers.entries.map((entry) {
             return Answer(questionId: entry.key, selectedIndex: entry.value);
@@ -85,8 +83,7 @@ class ToeicTestPageViewModel extends StateNotifier<ToeicTestPageState> {
 
   void saveTest(){
     final submitTestRequest = SubmitTestRequest(
-      testId: 1,
-      userId: "user-1",
+      testId: testId,
       answers:
       state.answers.entries.map((entry) {
         return Answer(questionId: entry.key, selectedIndex: entry.value);

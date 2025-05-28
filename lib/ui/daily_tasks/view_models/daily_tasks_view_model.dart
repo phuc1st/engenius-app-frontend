@@ -6,18 +6,16 @@ import 'package:toeic/utils/result.dart';
 
 class DailyTasksViewModel extends StateNotifier<DailyTasksState> {
   final DailyTaskRepository _repository;
-  final String userId;
 
   DailyTasksViewModel({
     required DailyTaskRepository repository,
-    required this.userId,
   }) : _repository = repository,
        super(DailyTasksState.initial());
 
   Future<void> loadDailyTasks() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    final result = await _repository.getDailyTasks(userId);
+    final result = await _repository.getDailyTasks();
     if (result is Ok<List<DailyTask>>) {
       final tasks = result.value;
       final completedTasks = tasks.where((task) => task.isCompleted).length;
@@ -42,7 +40,7 @@ class DailyTasksViewModel extends StateNotifier<DailyTasksState> {
   }
 
   Future<void> completeTask(int taskId) async {
-    final result = await _repository.completeTask(taskId, userId);
+    final result = await _repository.completeTask(taskId);
     if (result is Ok<DailyTask>) {
       final completedTask = result.value;
       final updatedTasks = state.tasks.map((task) {
@@ -68,7 +66,7 @@ class DailyTasksViewModel extends StateNotifier<DailyTasksState> {
   }
 }
 
-final dailyTasksProvider = StateNotifierProvider.family<DailyTasksViewModel, DailyTasksState, String>((ref, userId) {
+final dailyTasksProvider = StateNotifierProvider<DailyTasksViewModel, DailyTasksState>((ref) {
   final repository = ref.watch(dailyTaskRepositoryProvider);
-  return DailyTasksViewModel(repository: repository, userId: userId);
+  return DailyTasksViewModel(repository: repository);
 }); 

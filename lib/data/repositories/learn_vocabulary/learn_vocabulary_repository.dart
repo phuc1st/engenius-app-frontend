@@ -11,10 +11,8 @@ class LearnVocabularyRepository extends BaseRepository {
     required LearnVocabularyApiClient learnVocabularyApiClient,
   }) : _learnVocabularyApiClient = learnVocabularyApiClient;
 
-  Future<Result<List<UserVocabularyTopicProgressResponse>>> getTopics(
-    String userId,
-  ) async {
-    final apiResponse = await _learnVocabularyApiClient.getTopics(userId);
+  Future<Result<List<UserVocabularyTopicProgressResponse>>> getTopics() async {
+    final apiResponse = await _learnVocabularyApiClient.getTopics();
     return handleApiResponse(apiResponse);
   }
 
@@ -26,12 +24,10 @@ class LearnVocabularyRepository extends BaseRepository {
   }
 
   Future<Result<UserVocabularyTopicProgressResponse>> createNewTopicProgress(
-    String userId,
-    int topicId,
+    int topicId
   ) async {
     final apiResponse = await _learnVocabularyApiClient.createNewTopicProgress(
-      userId,
-      topicId,
+      topicId
     );
     return handleApiResponse(apiResponse);
   }

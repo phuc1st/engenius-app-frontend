@@ -1,9 +1,46 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:toeic/routing/route.dart';
+import 'package:toeic/data/services/api/model/profile_response/user_profile__response.dart';
+import 'package:toeic/data/services/push_notification_service.dart';
 import 'package:toeic/routing/routes.dart';
+import 'package:toeic/data/repositories/profile/profile_repository.dart';
+import 'package:toeic/data/services/local/user_profile_service.dart';
+import 'package:toeic/utils/result.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final _profileRepository = ProfileRepository();
+  final _userProfileService = UserProfileService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final result = await _profileRepository.getMyProfile();
+    if (result is Ok<UserProfileResponse>) {
+      await _userProfileService.setUserProfile(result.value);
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  Future<void> _setPushNotification() async{
+    await Firebase.initializeApp();
+
+    // Khởi tạo notification
+    final pushNotificationService = PushNotificationService();
+    await pushNotificationService.initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +63,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(),
+                  _buildHeader(context),
                   const SizedBox(height: 24),
                   _buildProgressCard(),
                   const SizedBox(height: 24),
@@ -44,7 +81,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -82,10 +119,29 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          child: CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person, color: Colors.blue[700], size: 32),
+          child: FutureBuilder(
+            future: _userProfileService.getUserProfile(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data?.avatar != null) {
+                return CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.white,
+                  backgroundImage: NetworkImage(snapshot.data!.avatar!),
+                  child: IconButton(
+                    onPressed: () => Navigator.pushNamed(context, Routes.profile),
+                    icon: const Icon(Icons.person, color: Colors.transparent, size: 32),
+                  ),
+                );
+              }
+              return CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  onPressed: () => Navigator.pushNamed(context, Routes.profile),
+                  icon: Icon(Icons.person, color: Colors.blue[700], size: 32),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -125,7 +181,8 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(20),
@@ -208,7 +265,7 @@ class HomeScreen extends StatelessWidget {
                 'Luyện nghe',
                 Icons.headphones,
                 Colors.purple,
-                () {},
+                    () {},
               ),
             ),
             const SizedBox(width: 16),
@@ -217,7 +274,7 @@ class HomeScreen extends StatelessWidget {
                 'Luyện đọc',
                 Icons.menu_book,
                 Colors.orange,
-                () {},
+                    () {},
               ),
             ),
           ],
@@ -226,8 +283,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActionCard(
-      String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildQuickActionCard(String title, IconData icon, Color color,
+      VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -270,7 +327,7 @@ class HomeScreen extends StatelessWidget {
       {
         'icon': Icons.assignment,
         'title': 'Luyện thi TOEIC',
-        'route': Routes.toeicPractice,
+        'route': Routes.listToeicPractice,
         'color': Colors.orange,
         'gradient': [Colors.orange[400]!, Colors.orange[700]!],
       },
@@ -284,14 +341,14 @@ class HomeScreen extends StatelessWidget {
       {
         'icon': Icons.flash_on,
         'title': 'Từ vựng',
-        'route': Routes.flashCard,
+        'route': Routes.vocabulary,
         'color': Colors.purple,
         'gradient': [Colors.purple[400]!, Colors.purple[700]!],
       },
       {
         'icon': Icons.group,
         'title': 'Nhóm học',
-        'route': Routes.groupStudy,
+        'route': Routes.joinedGroup,
         'color': Colors.blue,
         'gradient': [Colors.blue[400]!, Colors.blue[700]!],
       },
@@ -336,7 +393,9 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final feature = features[index];
             return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, feature['route'] as String),//TODO Thêm arguments
+              onTap: () =>
+                  Navigator.pushNamed(context, feature['route'] as String),
+              //TODO Thêm arguments
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -457,7 +516,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskItem(String title, IconData icon, Color color, String status) {
+  Widget _buildTaskItem(String title, IconData icon, Color color,
+      String status) {
     return Row(
       children: [
         Container(

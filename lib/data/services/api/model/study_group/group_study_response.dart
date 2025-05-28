@@ -2,14 +2,14 @@ class GroupStudyResponse {
   final int id;
   final String name;
   final String description;
-  final String avatar;
+  final String avatarUrl;
   final String createdBy;
 
   GroupStudyResponse({
     required this.id,
     required this.name,
     required this.description,
-    required this.avatar,
+    required this.avatarUrl,
     required this.createdBy,
   });
 
@@ -18,7 +18,7 @@ class GroupStudyResponse {
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      avatar: json['avatar'],
+      avatarUrl: json['avatarUrl'],
       createdBy: json['createdBy'],
     );
   }
@@ -28,7 +28,7 @@ class GroupStudyResponse {
       'id': id,
       'name': name,
       'description': description,
-      'avatar': avatar,
+      'avatarUrl': avatarUrl,
       'createdBy': createdBy,
     };
   }

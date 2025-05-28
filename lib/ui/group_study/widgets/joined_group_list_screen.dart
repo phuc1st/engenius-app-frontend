@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/data/services/api/model/study_group/group_node_response.dart';
+import 'package:toeic/data/services/local/user_profile_service.dart';
 import 'package:toeic/provider/study_group_provider.dart';
 import 'package:toeic/routing/route_arguments/group_chat_arguments.dart';
 import 'package:toeic/routing/routes.dart';
@@ -19,7 +21,7 @@ class JoinedGroupListScreen extends ConsumerStatefulWidget {
 
 class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
   final _scrollController = ScrollController();
-
+//TODO MẤY CÁI GỌI API THÌ GỌI LẠI MỖI LẦN VÔ MÀN HÌNH CHỨ KHÔNG PHẢI INIT
   @override
   void initState() {
     super.initState();
@@ -61,6 +63,13 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
           color: AppColors.primary,
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            color: AppColors.primary,
+            onPressed: () => Navigator.pushNamed(context, Routes.groupStudy),
+          )
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -115,17 +124,28 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              Routes.groupChat,
-              arguments: GroupChatArguments(
-                groupId: group.id,
-                groupName: group.name,
-                userId: "2",
-                senderName: "loan",
-              ),
-            );
+          onTap: () async {
+            final userProfile = await UserProfileService().getUserProfile();
+            if (userProfile != null) {
+              if (mounted) {
+                Navigator.pushNamed(
+                  context,
+                  Routes.groupChat,
+                  arguments: GroupChatArguments(
+                    groupId: group.id,
+                    groupName: group.name,
+                    avatarUrl: group.avatarUrl,
+                    userId: userProfile.id,
+                    senderName: userProfile.username,
+                  ),
+                );
+              }
+            } else {
+              // Xử lý trường hợp không có user profile
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Không thể lấy thông tin người dùng')),
+              );
+            }
           },
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -134,25 +154,23 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
+                  children: [CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.blue[50],
+                    backgroundImage: group.avatarUrl != null && group.avatarUrl.isNotEmpty
+                        ? NetworkImage(ApiConstants.baseUrl+group.avatarUrl)
+                        : null, // Nếu có avatarUrl thì load ảnh từ mạng, nếu không thì để nền trống
+                    child: group.avatarUrl == null || group.avatarUrl.isEmpty
+                        ? Text(
+                      group.name[0].toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
                       ),
-                      child: Center(
-                        child: Text(
-                          group.name[0].toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ),
+                    )
+                        : null, // Nếu có ảnh thì không hiển thị chữ
+                  ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(

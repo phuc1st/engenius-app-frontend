@@ -38,7 +38,7 @@ class FullTestScreen extends StatelessWidget {
             testNumber: testNumber,
             isTakingTest: isTakingTest,
             isNew: isNew,
-            onTap: onTestItemTap,
+            onTap: (id)=> Navigator.pushNamed(context, Routes.toeicTest, arguments: id),
           );
         },
       ),
@@ -172,9 +172,5 @@ class FullTestScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void onTestItemTap(int testNumber) {
-    print("Tap on: $testNumber");
   }
 }

@@ -10,18 +10,18 @@ class DailyTaskRepository extends BaseRepository {
   DailyTaskRepository({required DailyTaskApiClient dailyTaskApiClient})
       : _dailyTaskApiClient = dailyTaskApiClient;
 
-  Future<Result<List<DailyTask>>> getDailyTasks(String userId) async {
-    final apiResponse = await _dailyTaskApiClient.getDailyTasks(userId);
+  Future<Result<List<DailyTask>>> getDailyTasks() async {
+    final apiResponse = await _dailyTaskApiClient.getDailyTasks();
     return handleApiResponse(apiResponse);
   }
 
-  Future<Result<DailyTask>> completeTask(int taskId, String userId) async {
-    final apiResponse = await _dailyTaskApiClient.completeTask(taskId, userId);
+  Future<Result<DailyTask>> completeTask(int taskId) async {
+    final apiResponse = await _dailyTaskApiClient.completeTask(taskId);
     return handleApiResponse(apiResponse);
   }
 
-  Future<Result<DailyTask>> getTaskProgress(String userId) async {
-    final apiResponse = await _dailyTaskApiClient.getTaskProgress(userId);
+  Future<Result<DailyTask>> getTaskProgress() async {
+    final apiResponse = await _dailyTaskApiClient.getTaskProgress();
     return handleApiResponse(apiResponse);
   }
 }

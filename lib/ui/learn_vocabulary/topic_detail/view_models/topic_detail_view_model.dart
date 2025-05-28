@@ -16,7 +16,6 @@ class VocabularyViewModel
   Future<void> getTopics(UserVocabularyTopicProgressResponse topic) async {
     state = const AsyncValue.loading();
     final result = await _learnVocabularyRepository.createNewTopicProgress(
-      AppSession.userId,
       topic.vocabularyTopicId,
     );
 

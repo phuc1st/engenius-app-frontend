@@ -6,11 +6,9 @@ import 'package:toeic/ui/daily_tasks/widgets/daily_task_card.dart';
 import 'package:toeic/utils/app_colors.dart';
 
 class DailyTasksScreen extends ConsumerStatefulWidget {
-  final String userId;
   
   const DailyTasksScreen({
     super.key,
-    required this.userId,
   });
 
   @override
@@ -21,12 +19,12 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(dailyTasksProvider(widget.userId).notifier).loadDailyTasks());
+    Future.microtask(() => ref.read(dailyTasksProvider.notifier).loadDailyTasks());
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(dailyTasksProvider(widget.userId));
+    final state = ref.watch(dailyTasksProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +53,7 @@ class _DailyTasksScreenState extends ConsumerState<DailyTasksScreen> {
                             task: task,
                             onComplete: () {
                               ref
-                                  .read(dailyTasksProvider(widget.userId).notifier)
+                                  .read(dailyTasksProvider.notifier)
                                   .completeTask(task.id);
                             },
                           );

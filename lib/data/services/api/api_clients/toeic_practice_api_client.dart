@@ -30,11 +30,10 @@ class ToeicPracticeApiClient extends BaseApiClient {
   }
 
   Future<ApiResponse<List<TestAttemptAnswerResponse>>> getTestAttempt(
-    String userId,
     int testId,
   ) async {
     return makeRequest(
-      url: 'http://localhost:8222/api/v1/learn/test-attempt/user-1/1',
+      url: 'http://localhost:8222/api/v1/learn/test-attempt/$testId',
       method: 'GET',
       fromJson: (json) => listFromJson(json, TestAttemptAnswerResponse.fromJson),
     );

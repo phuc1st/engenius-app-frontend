@@ -30,7 +30,6 @@ class _TopicDetailScreenState extends ConsumerState<TopicDetailScreen> {
         final result = await ref
             .read(learnVocabularyRepositoryProvider)
             .createNewTopicProgress(
-              AppSession.userId,
               widget.topic.vocabularyTopicId,
             );
         if (!mounted) return;

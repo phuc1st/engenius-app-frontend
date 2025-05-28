@@ -14,7 +14,7 @@ class VocabularyViewModel extends StateNotifier<AsyncValue<List<UserVocabularyTo
 
   Future<void> getTopics() async {
     state = const AsyncValue.loading();
-    final result = await _learnVocabularyRepository.getTopics(AppSession.userId);
+    final result = await _learnVocabularyRepository.getTopics();
 
     if (result is Ok<List<UserVocabularyTopicProgressResponse>>) {
       state = AsyncValue.data(result.value);

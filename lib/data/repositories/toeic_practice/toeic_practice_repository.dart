@@ -21,8 +21,8 @@ class ToeicPracticeRepository extends BaseRepository {
     return handleApiResponse(apiResponse);
   }
 
-  Future<Result<List<TestAttemptAnswerResponse>>> getTestAttempts(String userId, int testId) async {
-    final apiResponse = await toeicTestApiClient.getTestAttempt(userId, testId);
+  Future<Result<List<TestAttemptAnswerResponse>>> getTestAttempts(int testId) async {
+    final apiResponse = await toeicTestApiClient.getTestAttempt(testId);
     return handleApiResponse(apiResponse);
   }
 

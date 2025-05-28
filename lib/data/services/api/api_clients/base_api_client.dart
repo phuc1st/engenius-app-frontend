@@ -88,7 +88,7 @@ abstract class BaseApiClient {
     dynamic body,
     required T Function(dynamic json) fromJson,
     Map<String, dynamic>? queryParameters,
-    bool useToken = false,
+    bool useToken = true,
     Map<String, dynamic>? headers,
   }) async {
     try {

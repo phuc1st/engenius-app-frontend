@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toeic/data/services/api/api_clients/device_token_api_client.dart';
 
 class PushNotificationService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -48,6 +49,7 @@ class PushNotificationService {
   Future<void> _updateDeviceToken(String token) async {
     // TODO: Gửi token lên server của bạn
     debugPrint('Device Token: $token');
+    DeviceTokenApiClient().setDeviceToken(token);
   }
 
   void _handleForegroundMessage(RemoteMessage message) {

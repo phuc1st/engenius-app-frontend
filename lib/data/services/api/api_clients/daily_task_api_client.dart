@@ -8,25 +8,25 @@ import 'package:toeic/utils/json_helpers.dart';
 class DailyTaskApiClient extends BaseApiClient {
   DailyTaskApiClient({super.dio});
 
-  Future<ApiResponse<List<DailyTask>>> getDailyTasks(String userId) async {
+  Future<ApiResponse<List<DailyTask>>> getDailyTasks() async {
     return makeRequest(
-      url: '${ApiConstants.dailyTasks}/$userId',
+      url: ApiConstants.dailyTasks,
       method: 'GET',
       fromJson: (json) => listFromJson(json, DailyTask.fromJson),
     );
   }
 
-  Future<ApiResponse<DailyTask>> completeTask(int taskId, String userId) async {
+  Future<ApiResponse<DailyTask>> completeTask(int taskId) async {
     return makeRequest(
-      url: '${ApiConstants.dailyTasks}/$taskId/complete/$userId',
+      url: '${ApiConstants.dailyTasks}/$taskId/complete',
       method: 'POST',
       fromJson: (json) => DailyTask.fromJson(json),
     );
   }
 
-  Future<ApiResponse<DailyTask>> getTaskProgress(String userId) async {
+  Future<ApiResponse<DailyTask>> getTaskProgress() async {
     return makeRequest(
-      url: '${ApiConstants.dailyTaskProgress}/$userId',
+      url: ApiConstants.dailyTaskProgress,
       method: 'GET',
       fromJson: (json) => DailyTask.fromJson(json),
     );

@@ -11,7 +11,6 @@ class ProfileApiClient extends BaseApiClient {
       url: ApiConstants.getMyProfile,
       method: 'GET',
       fromJson: (json) => UserProfileResponse.fromJson(json),
-      useToken: true,
     );
   }
 }

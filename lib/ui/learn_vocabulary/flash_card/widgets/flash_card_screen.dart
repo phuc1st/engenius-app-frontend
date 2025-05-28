@@ -5,17 +5,19 @@ import 'package:toeic/provider/learn_vocabulary_provider.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flashcard_counter.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flashcard_progress.dart';
+import 'package:toeic/utils/app_colors.dart';
+import 'package:toeic/utils/gradient_app_bar.dart';
 
-class FlashcardScreen2 extends ConsumerStatefulWidget {
+class FlashcardScreen extends ConsumerStatefulWidget {
   final int progressId;
 
-  const FlashcardScreen2({super.key, required this.progressId});
+  const FlashcardScreen({super.key, required this.progressId});
 
   @override
-  ConsumerState<FlashcardScreen2> createState() => _FlashcardScreenState();
+  ConsumerState<FlashcardScreen> createState() => _FlashcardScreenState();
 }
 
-class _FlashcardScreenState extends ConsumerState<FlashcardScreen2> {
+class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
   double _offsetX = 0.0;
   double _offsetY = 0.0;
   bool? _directionTextIsRight;
@@ -50,7 +52,21 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen2> {
     final state = ref.watch(flashCardViewModelProvider);
     final flashCards = state.flashCards;
     return Scaffold(
-      appBar: AppBar(title: const Text("Flashcards")),
+      appBar: GradientAppBar(
+        title: Text(
+          "Flash card",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: AppColors.primary,
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body:
           state.isLoading
               ? const Center(child: CircularProgressIndicator())

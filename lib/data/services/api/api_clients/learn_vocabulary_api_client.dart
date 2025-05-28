@@ -9,11 +9,9 @@ import 'package:toeic/utils/json_helpers.dart';
 class LearnVocabularyApiClient extends BaseApiClient {
   LearnVocabularyApiClient({Dio? dio}) : super(dio: dio);
 
-  Future<ApiResponse<List<UserVocabularyTopicProgressResponse>>> getTopics(
-    String userId,
-  ) async {
+  Future<ApiResponse<List<UserVocabularyTopicProgressResponse>>> getTopics() async {
     return makeRequest(
-      url: ApiConstants.getTopics(userId),
+      url: ApiConstants.getTopics,
       method: 'GET',
       fromJson:
           (json) =>
@@ -32,11 +30,11 @@ class LearnVocabularyApiClient extends BaseApiClient {
   }
 
   Future<ApiResponse<UserVocabularyTopicProgressResponse>>
-  createNewTopicProgress(String userId, int topicId) async {
+  createNewTopicProgress(int topicId) async {
     return makeRequest(
       url: ApiConstants.createNewTopicProgress,
       method: 'POST',
-      body: {"userId": userId, "topicId": topicId},
+      body: {"topicId": topicId},
       fromJson: (json) => UserVocabularyTopicProgressResponse.fromJson(json),
     );
   }

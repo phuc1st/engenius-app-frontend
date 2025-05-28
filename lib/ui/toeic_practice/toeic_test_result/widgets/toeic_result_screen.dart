@@ -47,7 +47,7 @@ class ToeicTestResultScreen extends StatelessWidget {
                   ElevatedButton.icon(
                     onPressed:
                         () =>
-                            Navigator.pushNamed(context, Routes.toeicPractice),
+                            Navigator.pushNamed(context, Routes.listToeicPractice),
                     icon: const Icon(Icons.refresh),
                     label: const Text('Làm lại bài'),
                   ),

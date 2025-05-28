@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/data/services/api/model/study_group/group_message_response.dart';
 import 'package:toeic/provider/study_group_provider.dart';
+import 'package:toeic/routing/route_arguments/group_chat_arguments.dart';
 import 'package:toeic/ui/group_study/viewmodels/group_chat_state.dart';
 import 'package:toeic/utils/app_colors.dart';
 import 'package:toeic/utils/app_text_styles.dart';
@@ -14,17 +15,11 @@ import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class GroupChatScreen extends ConsumerStatefulWidget {
-  final String groupId;
-  final String groupName;
-  final String userId;
-  final String senderName;
+  final GroupChatArguments group;
 
   const GroupChatScreen({
     super.key,
-    required this.groupId,
-    required this.groupName,
-    required this.userId,
-    required this.senderName,
+    required this.group,
   });
 
   @override
@@ -43,11 +38,11 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(groupChatViewModelProvider.notifier)
-          .loadMessages(groupId: widget.groupId, refresh: true);
+          .loadMessages(groupId: widget.group.groupId, refresh: true);
     });
     channel = WebSocketChannel.connect(
       Uri.parse(
-        '${ApiConstants.chatSocket}/ws?userId=${widget.userId}&groupId=${widget.groupId}',
+        '${ApiConstants.chatSocket}/ws?userId=${widget.group.userId}&groupId=${widget.group.groupId}',
       ),
     );
     channel.stream.listen((data) {
@@ -78,7 +73,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
           state.hasMore) {
         ref
             .read(groupChatViewModelProvider.notifier)
-            .loadMessages(groupId: widget.groupId, refresh: false);
+            .loadMessages(groupId: widget.group.groupId, refresh: false);
       }
       // Hiện nút scroll-to-bottom nếu cách cuối danh sách > 300px
       if (_scrollController.hasClients) {
@@ -107,9 +102,9 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
     final content = _messageController.text.trim();
     final msg = {
       "type": "chat",
-      "groupId": widget.groupId,
-      "from": widget.userId,
-      "senderName": widget.senderName,
+      "groupId": widget.group.groupId,
+      "from": widget.group.userId,
+      "senderName": widget.group.senderName,
       "content": content,
     };
     channel.sink.add(json.encode(msg));
@@ -148,13 +143,35 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
 
     return Scaffold(
       appBar: GradientAppBar(
-        title: Text(
-          widget.groupName,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 20, // Kích thước avatar
+              backgroundColor: Colors.blue[50],
+              backgroundImage: widget.group.avatarUrl != null && widget.group.avatarUrl.isNotEmpty
+                  ? NetworkImage(ApiConstants.baseUrl+widget.group.avatarUrl)
+                  : null, // Nếu có URL, tải ảnh từ mạng
+              child: widget.group.avatarUrl == null || widget.group.avatarUrl.isEmpty
+                  ? Text(
+                widget.group.groupName[0].toUpperCase(),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              )
+                  : null, // Nếu có ảnh thì không hiển thị chữ
+            ),
+            const SizedBox(width: 12), // Khoảng cách giữa avatar và tiêu đề
+            Text(
+              widget.group.groupName,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -184,7 +201,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               final message = messages[index];
-                              final isMe = message.senderId == widget.userId;
+                              final isMe = message.senderId == widget.group.userId;
                               return Align(
                                 alignment:
                                     isMe

@@ -28,7 +28,6 @@ class GroupStudyApiClient extends BaseApiClient {
       method: 'POST',
       body: formData,
       fromJson: (json) => GroupStudyResponse.fromJson(json),
-      useToken: true,
     );
   }
 
@@ -50,7 +49,6 @@ class GroupStudyApiClient extends BaseApiClient {
       fromJson: (json) => (json as List)
           .map((item) => GroupNodeResponse.fromJson(item))
           .toList(),
-      useToken: true,
     );
   }
 
@@ -58,7 +56,6 @@ class GroupStudyApiClient extends BaseApiClient {
     return makeRequest<void>(
       url: '${ApiConstants.groupEndPoint}/$groupId/join',
       method: 'POST',
-      useToken: true,
       fromJson: (j){}
     );
   }
@@ -79,7 +76,6 @@ class GroupStudyApiClient extends BaseApiClient {
       fromJson: (json) => (json as List)
           .map((item) => GroupNodeResponse.fromJson(item))
           .toList(),
-      useToken: true,
     );
   }
 
@@ -100,7 +96,6 @@ class GroupStudyApiClient extends BaseApiClient {
       fromJson: (json) => (json as List)
           .map((item) => GroupMessageResponse.fromJson(item))
           .toList(),
-      useToken: true,
     );
   }
 
@@ -113,7 +108,6 @@ class GroupStudyApiClient extends BaseApiClient {
       method: 'POST',
       body: {'content': content},
       fromJson: (json) => GroupMessageResponse.fromJson(json),
-      useToken: true,
     );
   }
 } 

@@ -6,6 +6,7 @@ class UserProfileResponse {
   final String lastName;
   final DateTime dob;
   final String city;
+  final String? avatar;
 
   UserProfileResponse({
     required this.id,
@@ -15,6 +16,7 @@ class UserProfileResponse {
     required this.lastName,
     required this.dob,
     required this.city,
+    this.avatar,
   });
 
   factory UserProfileResponse.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class UserProfileResponse {
       lastName: json['lastName'],
       dob: DateTime.parse(json['dob'] as String),
       city: json['city'],
+      avatar: json['avatar'],
     );
   }
 
@@ -38,6 +41,7 @@ class UserProfileResponse {
       'lastName': lastName,
       'dob': dob,
       'city': city,
+      'avatar': avatar,
     };
   }
 }
