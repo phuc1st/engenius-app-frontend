@@ -1,9 +1,9 @@
 class GroupStudyResponse {
-  final int id;
-  final String name;
-  final String description;
-  final String avatarUrl;
-  final String createdBy;
+  final int? id;
+  final String? name;
+  final String? description;
+  final String? avatarUrl;
+  final String? createdBy;
 
   GroupStudyResponse({
     required this.id,

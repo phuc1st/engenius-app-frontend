@@ -14,6 +14,7 @@ class FlashCardViewModel extends StateNotifier<FlashCardScreenState> {
 
   Future<void> getFlashCards(int progressId) async {
     this.progressId = progressId;
+    state = FlashCardScreenState(flashCards: []);
     state = state.copyWith(isLoading: true, error: null);
     final result = await _learnVocabularyRepository.getFlashCards(progressId);
 

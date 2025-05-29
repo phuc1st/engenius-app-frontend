@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/toeic_test.dart';
 
 class QuestionOverviewBottomSheet extends StatelessWidget {
   final int totalQuestions;
   final Set<int> answeredQuestions;
   final void Function(int) onQuestionTap;
   final Future<void> Function() onSubmit;
+  final ToeicTest toeicTest;
+  final int currentIndex;
 
   const QuestionOverviewBottomSheet({
     super.key,
@@ -12,6 +15,8 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
     required this.answeredQuestions,
     required this.onQuestionTap,
     required this.onSubmit,
+    required this.toeicTest,
+    required this.currentIndex,
   });
 
   @override
@@ -132,25 +137,35 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
 
 
   Widget _buildGroupedQuestions(List<int> questions) {
-    final Map<String, List<int>> parts = {
-      'Part 1': [],
-      'Part 2': [],
-      'Part 3': [],
-    };
+    final Map<String, List<int>> parts = {};
+    
+    int? currentQuestionNumber;
+    var allBlocks = toeicTest.parts.expand((p) => p.blocks).toList();
+    if (currentIndex < allBlocks.length) {
+      var currentBlock = allBlocks[currentIndex];
+      if (currentBlock.questions.isNotEmpty) {
+        currentQuestionNumber = currentBlock.questions.first.number;
+      }
+    }
+    
+    for (var part in toeicTest.parts) {
+      parts['Part ${part.partNumber}'] = [];
+    }
 
-    for (var q in questions) {
-      if (q <= 6) {
-        parts['Part 1']!.add(q);
-      } else if (q <= 31) {
-        parts['Part 2']!.add(q);
-      } else {
-        parts['Part 3']!.add(q);
+    for (var part in toeicTest.parts) {
+      for (var block in part.blocks) {
+        for (var question in block.questions) {
+          if (questions.contains(question.number)) {
+            parts['Part ${part.partNumber}']!.add(question.number);
+          }
+        }
       }
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: parts.entries.map((entry) {
+        if (entry.value.isEmpty) return const SizedBox.shrink();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -172,7 +187,7 @@ class QuestionOverviewBottomSheet extends StatelessWidget {
                         color: isAnswered ? Colors.green : Colors.grey.shade300,
                       ),
                       borderRadius: BorderRadius.circular(8),
-                      color: q == 9 ? Colors.blue.shade50 : null, // giả lập "đang chọn"
+                      color: q == currentQuestionNumber ? Colors.blue.shade50 : null,
                     ),
                     child: Text(
                       '$q',

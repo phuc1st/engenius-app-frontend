@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toeic/config/api_constants.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/audio_player.dart';
 
 class QuestionWidget extends StatelessWidget {
@@ -40,7 +41,7 @@ class QuestionWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            AudioPlayerWidget(audioUrl: audioUrl!),
+            AudioPlayerWidget(audioUrl: ApiConstants.baseUrl + audioUrl!),
             const SizedBox(height: 16),
           ],
           // Hình ảnh (placeholder)
@@ -48,7 +49,7 @@ class QuestionWidget extends StatelessWidget {
             ClipRRect(
               clipBehavior: Clip.hardEdge,
               borderRadius: BorderRadius.circular(20), // Bo góc tại đây
-              child: Image.network(imageUrl!, fit: BoxFit.contain, height: 150),
+              child: Image.network(ApiConstants.baseUrl + imageUrl!, fit: BoxFit.contain, height: 150),
             ),
           if (passage != null)
             Text(

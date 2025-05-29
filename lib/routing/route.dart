@@ -71,7 +71,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Routes.listToeicPractice:
       return MaterialPageRoute(builder: (_) => FullTestScreen());
     case Routes.toeicTest:
-      final testId = settings.arguments as int;
+      int testId = settings.arguments as int;
+      testId = 1;
       return MaterialPageRoute(builder: (_) => ToeicTestScreen(testId: testId));
     case Routes.toeicTestResult:
       final testResult = settings.arguments as SubmitTestResponse;

@@ -31,6 +31,20 @@ class _JoinedGroupListScreenState extends ConsumerState<JoinedGroupListScreen> {
     });
   }
 
+  bool _hasLoadedOnce = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasLoadedOnce) {
+      ref.read(joinedGroupListViewModelProvider.notifier).loadGroups(refresh: true);
+      _hasLoadedOnce = true;
+    } else {
+      // Khi quay lại màn nếu đã từng load, load lại
+      ref.read(joinedGroupListViewModelProvider.notifier).loadGroups(refresh: true);
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();

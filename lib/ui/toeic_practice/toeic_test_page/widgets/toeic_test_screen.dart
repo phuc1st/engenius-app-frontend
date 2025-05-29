@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toeic/data/services/api/model/toeic_test_response/toeic_test.dart';
 import 'package:toeic/provider/toeic_practice_provider.dart';
 import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/toeic_practice/toeic_test_page/widgets/answer_widget.dart';
@@ -35,7 +36,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
   Future<void> submitTestHandler() async {
     print("Voaf");
     await ref
-        .read(toeicTestScreenViewModelProvider(2).notifier) //TODO Chỉnh lại toeic test Id ở đây
+        .read(toeicTestScreenViewModelProvider(widget.testId).notifier) //TODO Chỉnh lại toeic test Id ở đây
         .submitTest(
           onSuccess: (result) {
             Navigator.pushNamedAndRemoveUntil(
@@ -69,6 +70,8 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
     int totalQuestions,
     Set<int> answered,
     Map<int, int> questionToBlock,
+    ToeicTest toeicTest,
+    int currentIndex
   ) {
     showModalBottomSheet(
       context: context,
@@ -85,6 +88,8 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
             }
           },
           onSubmit: submitTestHandler,
+          toeicTest: toeicTest,
+          currentIndex: currentIndex,
         );
       },
     );
@@ -117,8 +122,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                   onPressed: () {
                     ref
                         .read(
-                          toeicTestScreenViewModelProvider(
-                            2,
+                          toeicTestScreenViewModelProvider(widget.testId,
                           ).notifier,
                         )
                         .saveTest();
@@ -151,9 +155,9 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(toeicTestScreenViewModelProvider(2));
+    final state = ref.watch(toeicTestScreenViewModelProvider(widget.testId));
     final vm = ref.read(
-      toeicTestScreenViewModelProvider(2).notifier,
+      toeicTestScreenViewModelProvider(widget.testId).notifier,
     );
 
     if (state.isLoading) {
@@ -196,7 +200,7 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                 onPressed: () => _onWillPop(),
                 icon: Icon(Icons.cancel_outlined, size: 30),
               ),
-              Text("TEsT 1".toUpperCase()),
+              Text(state.toeicTest.name.toUpperCase()),
             ],
           ),
           automaticallyImplyLeading: false,
@@ -216,6 +220,8 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                 totalQuestion,
                 answeredSet,
                 questionToBlock,
+                state.toeicTest,
+                state.currentIndex
               ),
           onNext: () {
             if (vm.state.currentIndex < totalPage - 1) {
@@ -299,10 +305,10 @@ class _ToeicTestScreenState extends ConsumerState<ToeicTestScreen> {
                           color: Colors.blueAccent,
                         ),
                         SizedBox(width: 4),
-                        TestTimerText(
+                        /*TestTimerText(
                           initialTime: Duration(hours: 2),
                           onCountdownFinished: submitTestHandler,
-                        ),
+                        ),*/
                       ],
                     ),
                     const SizedBox(height: 16),

@@ -54,7 +54,7 @@ class AnswerWidget extends StatelessWidget {
           'Question ${q.number}',
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        if (q.text.isNotEmpty) ...[const SizedBox(height: 4), Text(q.text)],
+        if (q.text!=null) ...[const SizedBox(height: 4), Text(q.text!)],
         const SizedBox(height: 8),
         // Các lựa chọn
         /* ...q.options.map(

@@ -1,14 +1,14 @@
 class Question {
   final int id;
   final int number;
-  final String text;
+  final String? text;
   final List<String> options;
   final int correctIndex;
 
   Question({
     required this.id,
     required this.number,
-    required this.text,
+    this.text,
     required this.options,
     required this.correctIndex
   });
@@ -17,7 +17,7 @@ class Question {
     return Question(
         id: json['id'] as int,
         number: json['number'] as int,
-        text: json['text'] as String,
+        text: json['text'] as String?,
         options: List<String>.from(json['options'] as List<dynamic>),
         correctIndex: json['correctIndex'] as int
     );

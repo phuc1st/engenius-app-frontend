@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toeic/provider/learn_vocabulary_provider.dart';
+import 'package:toeic/routing/routes.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flash_card.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flashcard_counter.dart';
 import 'package:toeic/ui/learn_vocabulary/flash_card/widgets/flashcard_progress.dart';
@@ -106,15 +107,51 @@ class _FlashcardScreenState extends ConsumerState<FlashcardScreen> {
                         right: state.rightCount,
                       ),
                     ] else
-                      Expanded(
-                        child: Center(
-                          child: const Text(
-                            "Hết thẻ!",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                      Center(  // Thay Expanded bằng Center
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Chúc mừng!",
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Bạn đã hoàn thành bài học flashcard",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  Routes.home,
+                                      (route) => false,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 16,
+                                ),
+                              ),
+                              child: const Text(
+                                "Quay về trang chủ",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                   ],
